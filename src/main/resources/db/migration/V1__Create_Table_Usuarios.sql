@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    criado_em TIMESTAMP DEFAULT NOW()
+    data_criacao TIMESTAMP DEFAULT NOW()
 );

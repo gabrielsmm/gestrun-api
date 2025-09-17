@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS corridas (
     local VARCHAR(255),
     distancia_km NUMERIC(5,2),
     regulamento TEXT,
-    criado_em TIMESTAMP DEFAULT NOW(),
+    data_criacao TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_organizador FOREIGN KEY (organizador_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
