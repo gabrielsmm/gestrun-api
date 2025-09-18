@@ -1,10 +1,10 @@
-package com.gabrielsmm.gestrun.controllers;
+package com.gabrielsmm.gestrun.controller;
 
-import com.gabrielsmm.gestrun.dtos.UsuarioRequestDTO;
-import com.gabrielsmm.gestrun.dtos.UsuarioResponseDTO;
-import com.gabrielsmm.gestrun.entities.Usuario;
-import com.gabrielsmm.gestrun.mappers.UsuarioMapper;
-import com.gabrielsmm.gestrun.services.UsuarioService;
+import com.gabrielsmm.gestrun.dto.UsuarioRequestDTO;
+import com.gabrielsmm.gestrun.dto.UsuarioResponseDTO;
+import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
+import com.gabrielsmm.gestrun.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package com.gabrielsmm.gestrun.dtos;
+package com.gabrielsmm.gestrun.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

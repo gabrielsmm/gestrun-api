@@ -1,4 +1,4 @@
-package com.gabrielsmm.gestrun.dtos;
+package com.gabrielsmm.gestrun.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

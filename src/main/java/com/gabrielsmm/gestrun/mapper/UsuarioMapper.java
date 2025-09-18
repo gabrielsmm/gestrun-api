@@ -1,8 +1,8 @@
-package com.gabrielsmm.gestrun.mappers;
+package com.gabrielsmm.gestrun.mapper;
 
-import com.gabrielsmm.gestrun.dtos.UsuarioRequestDTO;
-import com.gabrielsmm.gestrun.dtos.UsuarioResponseDTO;
-import com.gabrielsmm.gestrun.entities.Usuario;
+import com.gabrielsmm.gestrun.dto.UsuarioRequestDTO;
+import com.gabrielsmm.gestrun.dto.UsuarioResponseDTO;
+import com.gabrielsmm.gestrun.domain.Usuario;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

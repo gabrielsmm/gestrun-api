@@ -1,4 +1,4 @@
-package com.gabrielsmm.gestrun.entities;
+package com.gabrielsmm.gestrun.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

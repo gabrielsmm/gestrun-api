@@ -1,7 +1,7 @@
-package com.gabrielsmm.gestrun.services;
+package com.gabrielsmm.gestrun.service;
 
-import com.gabrielsmm.gestrun.entities.Usuario;
-import com.gabrielsmm.gestrun.repositories.UsuarioRepository;
+import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

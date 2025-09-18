@@ -1,4 +1,4 @@
-package com.gabrielsmm.gestrun.configs;
+package com.gabrielsmm.gestrun.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
