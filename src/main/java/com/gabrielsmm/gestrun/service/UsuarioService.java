@@ -1,6 +1,7 @@
 package com.gabrielsmm.gestrun.service;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
 import com.gabrielsmm.gestrun.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class UsuarioService {
 
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com id " + id + " não foi encontrado"));
     }
 
     public Usuario criar(Usuario usuario) {
@@ -58,7 +59,7 @@ public class UsuarioService {
 
     public void deletar(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+            throw new RecursoNaoEncontradoException("Usuário com id " + id + " não foi encontrado");
         }
         usuarioRepository.deleteById(id);
     }
