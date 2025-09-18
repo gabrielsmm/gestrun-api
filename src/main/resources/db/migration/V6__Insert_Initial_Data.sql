@@ -1,7 +1,7 @@
 -- 1. Criar um usuário organizador
 INSERT INTO usuarios (nome, email, senha)
-VALUES ('João Organizador', 'joao@maratonas.com', '$2a$10$0Y7oV.wzcvyFa1y98KnvAO4caywHSUzJUgsBWod3E4Ghc8Uqx1aoe')
-ON CONFLICT DO NOTHING; -- 123456
+VALUES ('João Organizador', 'joao@maratonas.com', '$2a$10$0Y7oV.wzcvyFa1y98KnvAO4caywHSUzJUgsBWod3E4Ghc8Uqx1aoe') -- senha: 12345
+ON CONFLICT DO NOTHING;
 -- Obs: senha deve ser hash real com BCrypt no backend
 
 -- 2. Criar uma corrida vinculada ao organizador

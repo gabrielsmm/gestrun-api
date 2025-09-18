@@ -1,7 +1,7 @@
 package com.gabrielsmm.gestrun.controller;
 
-import com.gabrielsmm.gestrun.dto.UsuarioRequestDTO;
-import com.gabrielsmm.gestrun.dto.UsuarioResponseDTO;
+import com.gabrielsmm.gestrun.dto.UsuarioRequest;
+import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.service.UsuarioService;
@@ -26,7 +26,7 @@ public class UsuarioController {
 
     @GetMapping
     @Operation(summary = "Listar todos os usuários", description = "Retorna todos os usuários cadastrados")
-    public List<UsuarioResponseDTO> listar() {
+    public List<UsuarioResponse> listar() {
         return usuarioService.listar().stream()
                 .map(usuarioMapper::toResponse)
                 .toList();
@@ -34,13 +34,13 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar usuário por ID", description = "Retorna os dados de um usuário específico")
-    public ResponseEntity<UsuarioResponseDTO> buscar(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioMapper.toResponse(usuarioService.buscarPorId(id)));
     }
 
     @PostMapping
     @Operation(summary = "Criar usuário", description = "Cria um novo usuário organizador")
-    public ResponseEntity<UsuarioResponseDTO> criar(@Valid @RequestBody UsuarioRequestDTO request) {
+    public ResponseEntity<UsuarioResponse> criar(@Valid @RequestBody UsuarioRequest request) {
         Usuario entity = usuarioMapper.toEntity(request);
         Usuario salvo = usuarioService.criar(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(salvo));
@@ -48,8 +48,8 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar usuário", description = "Atualiza os dados de um usuário existente")
-    public ResponseEntity<UsuarioResponseDTO> atualizar(@PathVariable Long id,
-                                                        @Valid @RequestBody UsuarioRequestDTO request) {
+    public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
+                                                     @Valid @RequestBody UsuarioRequest request) {
         Usuario usuario = usuarioService.buscarPorId(id);
         usuarioMapper.updateEntityFromDto(request, usuario);
         Usuario atualizado = usuarioService.atualizar(id, usuario);

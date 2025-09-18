@@ -1,23 +1,19 @@
 package com.gabrielsmm.gestrun.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioRequestDTO {
+public class UsuarioResponse {
 
-    @NotBlank
+    private Long id;
     private String nome;
-
-    @NotBlank @Email
     private String email;
-
-    @NotBlank
-    private String senha;
+    private LocalDate dataCriacao;
 
 }
