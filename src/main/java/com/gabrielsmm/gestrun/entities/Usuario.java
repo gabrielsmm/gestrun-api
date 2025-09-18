@@ -9,7 +9,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "usuarios")
@@ -29,6 +29,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
+    @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
     @Override
