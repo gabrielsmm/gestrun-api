@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioRequest {
+public class UsuarioInsertRequest {
 
     @NotBlank(message = "O nome é obrigatório")
     @Size(min = 3, message = "O nome deve ter pelo menos 3 caracteres")

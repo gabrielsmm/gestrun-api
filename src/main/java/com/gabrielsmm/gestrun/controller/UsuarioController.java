@@ -1,8 +1,8 @@
 package com.gabrielsmm.gestrun.controller;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
-import com.gabrielsmm.gestrun.dto.UsuarioRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
+import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,19 +39,11 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioMapper.toResponse(usuarioService.buscarPorId(id)));
     }
 
-//    @PostMapping
-//    @Operation(summary = "Criar usuário", description = "Cria um novo usuário organizador")
-//    public ResponseEntity<UsuarioResponse> criar(@Valid @RequestBody UsuarioRequest request) {
-//        Usuario entity = usuarioMapper.toEntity(request);
-//        Usuario salvo = usuarioService.criar(entity);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(salvo));
-//    }
-
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar usuário", description = "Atualiza os dados de um usuário existente")
     public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
-                                                     @Valid @RequestBody UsuarioRequest request) {
-        Usuario atualizado = usuarioService.atualizar(id, usuarioMapper.toEntity(request));
+                                                     @Valid @RequestBody UsuarioUpdateRequest request) {
+        Usuario atualizado = usuarioService.atualizar(id, request);
         return ResponseEntity.ok(usuarioMapper.toResponse(atualizado));
     }
 

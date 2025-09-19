@@ -3,7 +3,7 @@ package com.gabrielsmm.gestrun.controller;
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.dto.LoginRequest;
 import com.gabrielsmm.gestrun.dto.LoginResponse;
-import com.gabrielsmm.gestrun.dto.UsuarioRequest;
+import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.security.JwtUtil;
@@ -49,9 +49,8 @@ public class AuthController {
 
     @PostMapping("/registrar")
     @Operation(summary = "Registrar", description = "Registra um novo usuário")
-    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody UsuarioRequest usuarioRequest) {
-        Usuario novoUsuario = usuarioMapper.toEntity(usuarioRequest);
-        Usuario usuarioSalvo = usuarioService.criar(novoUsuario);
+    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody UsuarioInsertRequest request) {
+        Usuario usuarioSalvo = usuarioService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(usuarioSalvo));
     }
 

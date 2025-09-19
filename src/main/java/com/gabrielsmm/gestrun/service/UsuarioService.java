@@ -1,8 +1,11 @@
 package com.gabrielsmm.gestrun.service;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
+import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
 import com.gabrielsmm.gestrun.exception.RecursoDuplicadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
+import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
 
     public List<Usuario> listar() {
@@ -28,31 +32,34 @@ public class UsuarioService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com id " + id + " não foi encontrado"));
     }
 
-    public Usuario criar(Usuario usuario) {
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+    public Usuario criar(UsuarioInsertRequest request) {
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new RecursoDuplicadoException("Email já cadastrado");
         }
+
+        Usuario usuario = usuarioMapper.toEntity(request);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario.setDataCriacao(LocalDateTime.now());
+
         return usuarioRepository.save(usuario);
     }
 
     @Transactional
-    public Usuario atualizar(Long id, Usuario dados) {
+    public Usuario atualizar(Long id, UsuarioUpdateRequest request) {
         Usuario atual = buscarPorId(id);
 
-        atual.setNome(dados.getNome());
-
-        if (!atual.getEmail().equals(dados.getEmail())) {
-            if (usuarioRepository.existsByEmail(dados.getEmail())) {
+        if (request.getEmail() != null && !request.getEmail().equals(atual.getEmail())) {
+            if (usuarioRepository.existsByEmail(request.getEmail())) {
                 throw new RecursoDuplicadoException("Email já cadastrado");
             }
-            atual.setEmail(dados.getEmail());
+            atual.setEmail(request.getEmail());
         }
 
+        usuarioMapper.updateEntityFromDto(request, atual);
+
         // se senha nova for fornecida, re-hash
-        if (dados.getSenha() != null && !dados.getSenha().isBlank()) {
-            atual.setSenha(passwordEncoder.encode(dados.getSenha()));
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            atual.setSenha(passwordEncoder.encode(request.getSenha()));
         }
 
         return usuarioRepository.save(atual);
