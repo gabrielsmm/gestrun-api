@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já cadastrado");
         }
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario.setDataCriacao(LocalDateTime.now());
         return usuarioRepository.save(usuario);
     }
 

@@ -1,11 +1,17 @@
 package com.gabrielsmm.gestrun.controller;
 
+import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.dto.LoginRequest;
 import com.gabrielsmm.gestrun.dto.LoginResponse;
+import com.gabrielsmm.gestrun.dto.UsuarioRequest;
+import com.gabrielsmm.gestrun.dto.UsuarioResponse;
+import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.security.JwtUtil;
+import com.gabrielsmm.gestrun.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -25,6 +29,8 @@ import java.time.Instant;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final UsuarioMapper usuarioMapper;
+    private final UsuarioService usuarioService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
@@ -35,12 +41,17 @@ public class AuthController {
         );
 
         String token = jwtUtil.gerarToken(authentication.getName());
+        String expiraEm = jwtUtil.getExpirationDateFromNow().toInstant().toString();
 
-        Instant expiraEm = jwtUtil.getExpirationDateFromNow().toInstant();
-        String expiraEmIso = expiraEm.toString(); // Formato ISO 8601 (UTC)
+        return ResponseEntity.ok(new LoginResponse(token, "Bearer", expiraEm));
+    }
 
-        LoginResponse response = new LoginResponse(token, "Bearer", expiraEmIso);
-        return ResponseEntity.ok(response);
+    @PostMapping("/registrar")
+    @Operation(summary = "Registrar", description = "Registra um novo usuário")
+    public ResponseEntity<UsuarioResponse> registrar(@RequestBody UsuarioRequest usuarioRequest) {
+        Usuario novoUsuario = usuarioMapper.toEntity(usuarioRequest);
+        Usuario usuarioSalvo = usuarioService.criar(novoUsuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(usuarioSalvo));
     }
 
 }
