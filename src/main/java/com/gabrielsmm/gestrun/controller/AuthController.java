@@ -10,6 +10,7 @@ import com.gabrielsmm.gestrun.security.JwtUtil;
 import com.gabrielsmm.gestrun.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class AuthController {
 
     @PostMapping("/registrar")
     @Operation(summary = "Registrar", description = "Registra um novo usuário")
-    public ResponseEntity<UsuarioResponse> registrar(@RequestBody UsuarioRequest usuarioRequest) {
+    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody UsuarioRequest usuarioRequest) {
         Usuario novoUsuario = usuarioMapper.toEntity(usuarioRequest);
         Usuario usuarioSalvo = usuarioService.criar(novoUsuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(usuarioSalvo));

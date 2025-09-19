@@ -4,25 +4,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    private ErroResposta buildErroResposta(HttpStatus status, String erro, String mensagem, HttpServletRequest request) {
-        return new ErroResposta(
-                LocalDateTime.now(),
-                status.value(),
-                erro,
-                mensagem,
-                request.getRequestURI()
-        );
-    }
 
     // Exceções genéricas
     @ExceptionHandler(Exception.class)
@@ -30,7 +20,7 @@ public class GlobalExceptionHandler {
         ErroResposta resposta = buildErroResposta(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Erro interno no servidor",
-                ex.getMessage(),
+                "Ocorreu um erro inesperado. Tente novamente mais tarde.",
                 request
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resposta);
@@ -39,16 +29,18 @@ public class GlobalExceptionHandler {
     // Erros de validação
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroResposta> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        String mensagens = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-
-        ErroResposta resposta = buildErroResposta(
-                HttpStatus.BAD_REQUEST,
+        ErroValidacao resposta = new ErroValidacao(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
                 "Validação falhou",
-                mensagens,
-                request
+                "Um ou mais campos estão inválidos.",
+                request.getRequestURI()
         );
+
+        for (FieldError f : ex.getBindingResult().getFieldErrors()) {
+            resposta.adicionarErro(f.getField(), f.getDefaultMessage());
+        }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
 
@@ -73,6 +65,27 @@ public class GlobalExceptionHandler {
                 request
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+
+    @ExceptionHandler(RecursoDuplicadoException.class)
+    public ResponseEntity<ErroResposta> handleRecursoDuplicado(RecursoDuplicadoException ex, HttpServletRequest request) {
+        ErroResposta resposta = buildErroResposta(
+                HttpStatus.CONFLICT,
+                "Recurso duplicado",
+                ex.getMessage(),
+                request
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(resposta);
+    }
+
+    private ErroResposta buildErroResposta(HttpStatus status, String erro, String mensagem, HttpServletRequest request) {
+        return new ErroResposta(
+                LocalDateTime.now(),
+                status.value(),
+                erro,
+                mensagem,
+                request.getRequestURI()
+        );
     }
 
 }

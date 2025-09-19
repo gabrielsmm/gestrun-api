@@ -1,14 +1,13 @@
 package com.gabrielsmm.gestrun.service;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.exception.RecursoDuplicadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
 import com.gabrielsmm.gestrun.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +30,7 @@ public class UsuarioService {
 
     public Usuario criar(Usuario usuario) {
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já cadastrado");
+            throw new RecursoDuplicadoException("Email já cadastrado");
         }
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario.setDataCriacao(LocalDateTime.now());
@@ -46,7 +45,7 @@ public class UsuarioService {
 
         if (!atual.getEmail().equals(dados.getEmail())) {
             if (usuarioRepository.existsByEmail(dados.getEmail())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já cadastrado");
+                throw new RecursoDuplicadoException("Email já cadastrado");
             }
             atual.setEmail(dados.getEmail());
         }
