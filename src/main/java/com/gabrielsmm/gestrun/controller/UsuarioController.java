@@ -49,9 +49,7 @@ public class UsuarioController {
     @Operation(summary = "Atualizar usuário", description = "Atualiza os dados de um usuário existente")
     public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
                                                      @Valid @RequestBody UsuarioRequest request) {
-        Usuario usuario = usuarioService.buscarPorId(id);
-        usuarioMapper.updateEntityFromDto(request, usuario);
-        Usuario atualizado = usuarioService.atualizar(id, usuario);
+        Usuario atualizado = usuarioService.atualizar(id, usuarioMapper.toEntity(request));
         return ResponseEntity.ok(usuarioMapper.toResponse(atualizado));
     }
 
