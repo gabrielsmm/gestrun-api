@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UsuarioRequest {
 
-    @NotBlank
+    @NotBlank(message = "O nome é obrigatório")
     @Size(min = 3, message = "O nome deve ter pelo menos 3 caracteres")
     private String nome;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "O e-mail é obrigatório")
+    @Email(message = "Formato de e-mail inválido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "A senha é obrigatória")
     @Size(min = 8, message = "A senha deve ter pelo menos 8 caracteres")
     private String senha;
 
