@@ -1,7 +1,10 @@
 package com.gabrielsmm.gestrun.domain;
 
+import com.gabrielsmm.gestrun.domain.enums.Perfil;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -29,6 +32,11 @@ public class Usuario implements Serializable {
 
     @Column(nullable = false)
     private String senha;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(nullable = false, columnDefinition = "perfil_usuario_enum")
+    private Perfil perfil = Perfil.ORGANIZADOR;
 
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;

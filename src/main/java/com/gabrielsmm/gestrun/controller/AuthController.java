@@ -7,6 +7,7 @@ import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.security.JwtUtil;
+import com.gabrielsmm.gestrun.security.UsuarioDetails;
 import com.gabrielsmm.gestrun.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +42,9 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.senha())
         );
 
-        String token = jwtUtil.gerarToken(authentication.getName());
+        UsuarioDetails usuarioDetails = (UsuarioDetails) authentication.getPrincipal();
+
+        String token = jwtUtil.gerarToken(usuarioDetails);
         String expiraEm = jwtUtil.getExpirationDateFromNow().toInstant().toString();
 
         return ResponseEntity.ok(new LoginResponse(token, "Bearer", expiraEm));

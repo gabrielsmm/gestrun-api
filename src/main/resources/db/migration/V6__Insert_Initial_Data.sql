@@ -1,6 +1,6 @@
 -- 1. Criar um usuário organizador
-INSERT INTO usuarios (nome, email, senha)
-VALUES ('João Organizador', 'joao@maratonas.com', '$2a$10$0Y7oV.wzcvyFa1y98KnvAO4caywHSUzJUgsBWod3E4Ghc8Uqx1aoe') -- senha: 12345
+INSERT INTO usuarios (nome, email, senha, perfil)
+VALUES ('Gabriel Mendes', 'gabriel@maratonas.com', '$2a$10$0Y7oV.wzcvyFa1y98KnvAO4caywHSUzJUgsBWod3E4Ghc8Uqx1aoe', 'ADMIN') -- senha: 12345
 ON CONFLICT DO NOTHING;
 -- Obs: senha deve ser hash real com BCrypt no backend
 

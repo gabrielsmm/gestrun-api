@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final UsuarioMapper usuarioMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @Operation(summary = "Listar todos os usuários", description = "Retorna todos os usuários cadastrados")
     public List<UsuarioResponse> listar() {
@@ -33,12 +35,14 @@ public class UsuarioController {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     @GetMapping("/{id}")
     @Operation(summary = "Buscar usuário por ID", description = "Retorna os dados de um usuário específico")
     public ResponseEntity<UsuarioResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioMapper.toResponse(usuarioService.buscarPorId(id)));
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar usuário", description = "Atualiza os dados de um usuário existente")
     public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
@@ -47,6 +51,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioMapper.toResponse(atualizado));
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     @DeleteMapping("/{id}")
     @Operation(summary = "Remover usuário", description = "Exclui um usuário pelo ID")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {

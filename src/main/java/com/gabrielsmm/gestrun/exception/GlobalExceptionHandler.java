@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -54,6 +55,17 @@ public class GlobalExceptionHandler {
                 request
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resposta);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErroResposta> handleAuthorizationDenied(AuthorizationDeniedException ex, HttpServletRequest request) {
+        ErroResposta resposta = buildErroResposta(
+                HttpStatus.FORBIDDEN,
+                "Acesso negado",
+                "Você não tem permissão para acessar este recurso",
+                request
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resposta);
     }
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
@@ -20,10 +21,16 @@ public class JwtUtil {
     @Value("${app.jwt.expiration-ms}")
     private long expirationMs;
 
-    public String gerarToken(String username) {
+    public String gerarToken(UsuarioDetails usuarioDetails) {
+        Map<String, Object> claims = Map.of(
+                "id", usuarioDetails.getId(),
+                "perfil", usuarioDetails.getPerfil().name()
+        );
+
         return Jwts.builder()
-                .subject(username)
-                .issuedAt(new Date())
+                .claims(claims)
+                .subject(usuarioDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey())
                 .compact();
