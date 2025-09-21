@@ -30,7 +30,7 @@ public class CorridaController {
     private final CorridaService corridaService;
     private final CorridaMapper corridaMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','CORREDOR')")
     @GetMapping
     @Operation(summary = "Listar todas as corridas")
     public List<CorridaResponse> listar() {
@@ -48,7 +48,7 @@ public class CorridaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','CORREDOR')")
     @GetMapping("/{id}")
     @Operation(summary = "Buscar corrida por ID")
     public ResponseEntity<CorridaResponse> buscar(@PathVariable Long id) {
