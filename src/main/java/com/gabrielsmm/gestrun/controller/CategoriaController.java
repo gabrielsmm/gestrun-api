@@ -28,7 +28,6 @@ public class CategoriaController {
     private final CategoriaService categoriaService;
     private final CategoriaMapper categoriaMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','CORREDOR')")
     @GetMapping
     @Operation(summary = "Listar categorias de uma corrida")
     public List<CategoriaResponse> listar(@PathVariable Long corridaId) {
@@ -37,15 +36,15 @@ public class CategoriaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','CORREDOR')")
     @GetMapping("/{id}")
     @Operation(summary = "Buscar categoria por ID")
-    public ResponseEntity<CategoriaResponse> buscar(@PathVariable Long id) {
+    public ResponseEntity<CategoriaResponse> buscar(@PathVariable Long corridaId,
+                                                    @PathVariable Long id) {
         Categoria categoria = categoriaService.buscarPorId(id);
         return ResponseEntity.ok(categoriaMapper.toResponse(categoria));
     }
 
-    @PreAuthorize("@categoriaSecurity.isOrganizadorDaCorrida(authentication, #corridaId)")
+    @PreAuthorize("@corridaSecurity.isOrganizador(authentication, #corridaId)")
     @PostMapping
     @Operation(summary = "Criar categoria em uma corrida")
     public ResponseEntity<CategoriaResponse> criar(@PathVariable Long corridaId,
@@ -57,7 +56,8 @@ public class CategoriaController {
     @PreAuthorize("@categoriaSecurity.isOrganizador(authentication, #id)")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar categoria")
-    public ResponseEntity<CategoriaResponse> atualizar(@PathVariable Long id,
+    public ResponseEntity<CategoriaResponse> atualizar(@PathVariable Long corridaId,
+                                                       @PathVariable Long id,
                                                        @Valid @RequestBody CategoriaUpdateRequest request) {
         Categoria atualizada = categoriaService.atualizar(id, request);
         return ResponseEntity.ok(categoriaMapper.toResponse(atualizada));
@@ -66,7 +66,8 @@ public class CategoriaController {
     @PreAuthorize("@categoriaSecurity.isOrganizador(authentication, #id)")
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar categoria")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long corridaId,
+                                        @PathVariable Long id) {
         categoriaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
