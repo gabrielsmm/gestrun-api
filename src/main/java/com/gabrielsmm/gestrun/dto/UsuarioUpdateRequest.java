@@ -1,5 +1,6 @@
 package com.gabrielsmm.gestrun.dto;
 
+import com.gabrielsmm.gestrun.domain.enums.Perfil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,5 +20,7 @@ public class UsuarioUpdateRequest {
 
     @Size(min = 8, message = "A senha deve ter pelo menos 8 caracteres")
     private String senha;
+
+    private Perfil perfil;
 
 }

@@ -57,6 +57,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resposta);
     }
 
+    // Autorização negada
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ErroResposta> handleAuthorizationDenied(AuthorizationDeniedException ex, HttpServletRequest request) {
         ErroResposta resposta = buildErroResposta(
@@ -68,6 +69,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resposta);
     }
 
+    // Exceções customizadas
     @ExceptionHandler(RecursoNaoEncontradoException.class)
     public ResponseEntity<ErroResposta> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex, HttpServletRequest request) {
         ErroResposta resposta = buildErroResposta(
@@ -88,6 +90,17 @@ public class GlobalExceptionHandler {
                 request
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(resposta);
+    }
+
+    @ExceptionHandler(AcessoNegadoException.class)
+    public ResponseEntity<ErroResposta> handleAcessoNegado(AcessoNegadoException ex, HttpServletRequest request) {
+        ErroResposta resposta = buildErroResposta(
+                HttpStatus.FORBIDDEN,
+                "Acesso negado",
+                ex.getMessage(),
+                request
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resposta);
     }
 
     private ErroResposta buildErroResposta(HttpStatus status, String erro, String mensagem, HttpServletRequest request) {

@@ -1,12 +1,15 @@
 package com.gabrielsmm.gestrun.service;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.domain.enums.Perfil;
 import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
+import com.gabrielsmm.gestrun.exception.AcessoNegadoException;
 import com.gabrielsmm.gestrun.exception.RecursoDuplicadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.repository.UsuarioRepository;
+import com.gabrielsmm.gestrun.util.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +44,14 @@ public class UsuarioService {
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario.setDataCriacao(LocalDateTime.now());
 
+        if (request.getPerfil() == null) {
+            usuario.setPerfil(Perfil.ORGANIZADOR);
+        } else if (request.getPerfil() == Perfil.ADMIN && !SecurityUtils.usuarioLogadoEhAdmin()) {
+            throw new AcessoNegadoException("somente ADMIN pode criar outro ADMIN");
+        } else {
+            usuario.setPerfil(request.getPerfil());
+        }
+
         return usuarioRepository.save(usuario);
     }
 
@@ -60,6 +71,13 @@ public class UsuarioService {
         // se senha nova for fornecida, re-hash
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
             atual.setSenha(passwordEncoder.encode(request.getSenha()));
+        }
+
+        if (request.getPerfil() != null && request.getPerfil() != atual.getPerfil()) {
+            if (!SecurityUtils.usuarioLogadoEhAdmin()) {
+                throw new AcessoNegadoException("Somente ADMIN pode alterar o perfil de um usuário");
+            }
+            atual.setPerfil(request.getPerfil());
         }
 
         return usuarioRepository.save(atual);
