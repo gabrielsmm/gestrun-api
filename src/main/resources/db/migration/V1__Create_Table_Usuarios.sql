@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS usuarios (
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     perfil perfil_usuario_enum NOT NULL DEFAULT 'ORGANIZADOR',
-    data_criacao TIMESTAMP DEFAULT NOW()
+    data_criacao TIMESTAMP NOT NULL DEFAULT NOW()
 );
