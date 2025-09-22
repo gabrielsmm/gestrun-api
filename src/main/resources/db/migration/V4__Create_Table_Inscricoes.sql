@@ -23,6 +23,6 @@ CREATE TABLE IF NOT EXISTS inscricoes (
     telefone VARCHAR(50),
     status inscricao_status_enum NOT NULL DEFAULT 'PENDENTE',
     numero_peito INT, -- só definido na entrega do kit
-    data_criacao TIMESTAMP DEFAULT NOW(),
+    data_criacao TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_corrida FOREIGN KEY (corrida_id) REFERENCES corridas(id) ON DELETE CASCADE
 );
