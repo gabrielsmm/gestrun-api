@@ -8,10 +8,22 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record InscricaoInsertRequest(
-        @NotBlank String nomeCorredor,
+        @NotNull(message = "O ID da corrida é obrigatório")
+        Long corridaId,
+
+        @NotBlank(message = "O nome do corredor é obrigatório")
+        String nomeCorredor,
+
         String documento,
-        @NotNull LocalDate dataNascimento,
-        @NotNull SexoInscricao sexo,
-        @Email String email,
+
+        @NotNull(message = "A data de nascimento é obrigatória")
+        LocalDate dataNascimento,
+
+        @NotNull(message = "O sexo é obrigatório")
+        SexoInscricao sexo,
+
+        @Email(message = "Formato de e-mail inválido")
+        String email,
+
         String telefone
 ) {}

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/corridas/{corridaId}/inscricoes")
+@RequestMapping("/api/inscricoes")
 @RequiredArgsConstructor
 @Tag(name = "5. Inscrições", description = "Gerenciamento de inscrições")
 @SecurityRequirement(name = "Bearer Authentication")
@@ -29,7 +29,7 @@ public class InscricaoController {
     private final InscricaoService inscricaoService;
     private final InscricaoMapper inscricaoMapper;
 
-    @GetMapping
+    @GetMapping("/corrida/{corridaId}")
     @Operation(summary = "Listar inscrições de uma corrida")
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public List<InscricaoResponse> listar(@PathVariable Long corridaId) {
@@ -41,27 +41,24 @@ public class InscricaoController {
     @GetMapping("/{id}")
     @Operation(summary = "Buscar inscrição por ID")
     @PermitAll
-    public ResponseEntity<InscricaoResponse> buscar(@PathVariable Long corridaId,
-                                                    @PathVariable Long id,
+    public ResponseEntity<InscricaoResponse> buscar(@PathVariable Long id,
                                                     @RequestParam String documentoOuEmail) {
-        Inscricao inscricao = inscricaoService.buscarPublico(corridaId, id, documentoOuEmail);
+        Inscricao inscricao = inscricaoService.buscarPublico(id, documentoOuEmail);
         return ResponseEntity.ok(inscricaoMapper.toResponse(inscricao));
     }
 
     @PostMapping
     @Operation(summary = "Criar inscrição em uma corrida")
     @PermitAll
-    public ResponseEntity<InscricaoResponse> criar(@PathVariable Long corridaId,
-                                                   @Valid @RequestBody InscricaoInsertRequest request) {
-        Inscricao criada = inscricaoService.criar(corridaId, request);
+    public ResponseEntity<InscricaoResponse> criar(@Valid @RequestBody InscricaoInsertRequest request) {
+        Inscricao criada = inscricaoService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(inscricaoMapper.toResponse(criada));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar inscrição")
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
-    public ResponseEntity<InscricaoResponse> atualizar(@PathVariable Long corridaId,
-                                                       @PathVariable Long id,
+    public ResponseEntity<InscricaoResponse> atualizar(@PathVariable Long id,
                                                        @Valid @RequestBody InscricaoUpdateRequest request) {
         Inscricao atualizada = inscricaoService.atualizar(id, request);
         return ResponseEntity.ok(inscricaoMapper.toResponse(atualizada));
@@ -70,8 +67,7 @@ public class InscricaoController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar inscrição")
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
-    public ResponseEntity<Void> deletar(@PathVariable Long corridaId,
-                                        @PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         inscricaoService.deletar(id);
         return ResponseEntity.noContent().build();
     }

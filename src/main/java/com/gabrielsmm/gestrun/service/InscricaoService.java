@@ -38,9 +38,8 @@ public class InscricaoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Inscrição com id " + id + " não foi encontrada"));
     }
 
-    public Inscricao buscarPublico(Long corridaId, Long inscricaoId, String documentoOuEmail) {
-        Inscricao inscricao = inscricaoRepository.findByIdAndCorridaId(inscricaoId, corridaId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Inscrição com id " + inscricaoId + " não foi encontrada para a corrida " + corridaId));
+    public Inscricao buscarPublico(Long inscricaoId, String documentoOuEmail) {
+        Inscricao inscricao = buscarPorId(inscricaoId);
 
         if (!(documentoOuEmail.equalsIgnoreCase(inscricao.getDocumento()) ||
                 documentoOuEmail.equalsIgnoreCase(inscricao.getEmail()))) {
@@ -50,8 +49,8 @@ public class InscricaoService {
         return inscricao;
     }
 
-    public Inscricao criar(Long corridaId, InscricaoInsertRequest request) {
-        Corrida corrida = corridaService.buscarPorId(corridaId);
+    public Inscricao criar(InscricaoInsertRequest request) {
+        Corrida corrida = corridaService.buscarPorId(request.corridaId());
         Inscricao inscricao = inscricaoMapper.toEntity(request);
         inscricao.setCorrida(corrida);
         return inscricaoRepository.save(inscricao);
