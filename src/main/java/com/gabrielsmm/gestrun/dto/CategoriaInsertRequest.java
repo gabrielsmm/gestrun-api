@@ -5,8 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CategoriaInsertRequest(
-        @NotBlank String nome,
+        @NotNull(message = "O ID da corrida é obrigatório")
+        Long corridaId,
+
+        @NotBlank(message = "O nome é obrigatório")
+        String nome,
+
         Integer idadeMin,
+
         Integer idadeMax,
-        @NotNull SexoCategoria sexo
+
+        @NotNull(message = "O sexo é obrigatório")
+        SexoCategoria sexo
 ) {}

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/corridas/{corridaId}/categorias")
+@RequestMapping("/api/categorias")
 @RequiredArgsConstructor
 @Tag(name = "4. Categorias", description = "Gerenciamento de categorias")
 @SecurityRequirement(name = "Bearer Authentication")
@@ -28,7 +28,7 @@ public class CategoriaController {
     private final CategoriaService categoriaService;
     private final CategoriaMapper categoriaMapper;
 
-    @GetMapping
+    @GetMapping("/corrida/{corridaId}")
     @Operation(summary = "Listar categorias de uma corrida")
     public List<CategoriaResponse> listar(@PathVariable Long corridaId) {
         return categoriaService.listarPorCorrida(corridaId).stream()
@@ -38,8 +38,7 @@ public class CategoriaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar categoria por ID")
-    public ResponseEntity<CategoriaResponse> buscar(@PathVariable Long corridaId,
-                                                    @PathVariable Long id) {
+    public ResponseEntity<CategoriaResponse> buscar(@PathVariable Long id) {
         Categoria categoria = categoriaService.buscarPorId(id);
         return ResponseEntity.ok(categoriaMapper.toResponse(categoria));
     }
@@ -47,17 +46,15 @@ public class CategoriaController {
     @PostMapping
     @Operation(summary = "Criar categoria em uma corrida")
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
-    public ResponseEntity<CategoriaResponse> criar(@PathVariable Long corridaId,
-                                                   @Valid @RequestBody CategoriaInsertRequest request) {
-        Categoria criada = categoriaService.criar(corridaId, request);
+    public ResponseEntity<CategoriaResponse> criar(@Valid @RequestBody CategoriaInsertRequest request) {
+        Categoria criada = categoriaService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaMapper.toResponse(criada));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar categoria")
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
-    public ResponseEntity<CategoriaResponse> atualizar(@PathVariable Long corridaId,
-                                                       @PathVariable Long id,
+    public ResponseEntity<CategoriaResponse> atualizar(@PathVariable Long id,
                                                        @Valid @RequestBody CategoriaUpdateRequest request) {
         Categoria atualizada = categoriaService.atualizar(id, request);
         return ResponseEntity.ok(categoriaMapper.toResponse(atualizada));
@@ -66,8 +63,7 @@ public class CategoriaController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar categoria")
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
-    public ResponseEntity<Void> deletar(@PathVariable Long corridaId,
-                                        @PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         categoriaService.deletar(id);
         return ResponseEntity.noContent().build();
     }

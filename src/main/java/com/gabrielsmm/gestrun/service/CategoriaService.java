@@ -31,8 +31,8 @@ public class CategoriaService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria com id " + id + " não foi encontrada"));
     }
 
-    public Categoria criar(Long corridaId, CategoriaInsertRequest request) {
-        Corrida corrida = corridaService.buscarPorId(corridaId);
+    public Categoria criar(CategoriaInsertRequest request) {
+        Corrida corrida = corridaService.buscarPorId(request.corridaId());
 
         if (!SecurityUtils.usuarioLogadoEhAdmin() &&
                 !corrida.getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
