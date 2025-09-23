@@ -8,6 +8,7 @@ import com.gabrielsmm.gestrun.exception.AcessoNegadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
 import com.gabrielsmm.gestrun.mapper.InscricaoMapper;
 import com.gabrielsmm.gestrun.repository.InscricaoRepository;
+import com.gabrielsmm.gestrun.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,13 @@ public class InscricaoService {
     private final InscricaoMapper inscricaoMapper;
 
     public List<Inscricao> listarPorCorrida(Long corridaId) {
+        Corrida corrida = corridaService.buscarPorId(corridaId);
+
+        if (!SecurityUtils.usuarioLogadoEhAdmin() &&
+                !corrida.getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
+            throw new AcessoNegadoException("Você não tem permissão para listar as inscrições desta corrida");
+        }
+
         return inscricaoRepository.findByCorridaId(corridaId);
     }
 
@@ -52,6 +60,11 @@ public class InscricaoService {
     public Inscricao atualizar(Long id, InscricaoUpdateRequest request) {
         Inscricao atual = buscarPorId(id);
 
+        if (!SecurityUtils.usuarioLogadoEhAdmin() &&
+                !atual.getCorrida().getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
+            throw new AcessoNegadoException("Você não tem permissão para atualizar esta inscrição");
+        }
+
         if (request.status() != null) {
             atual.setStatus(request.status());
         }
@@ -64,9 +77,13 @@ public class InscricaoService {
     }
 
     public void deletar(Long id) {
-        if (!inscricaoRepository.existsById(id)) {
-            throw new RecursoNaoEncontradoException("Inscrição com id " + id + " não foi encontrada");
+        Inscricao inscricao = buscarPorId(id);
+
+        if (!SecurityUtils.usuarioLogadoEhAdmin() &&
+                !inscricao.getCorrida().getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
+            throw new AcessoNegadoException("Você não tem permissão para deletar esta inscrição");
         }
+
         inscricaoRepository.deleteById(id);
     }
 

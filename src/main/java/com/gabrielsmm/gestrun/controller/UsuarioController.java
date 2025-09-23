@@ -26,34 +26,34 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final UsuarioMapper usuarioMapper;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @Operation(summary = "Listar todos os usuários", description = "Retorna todos os usuários cadastrados")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UsuarioResponse> listar() {
         return usuarioService.listar().stream()
                 .map(usuarioMapper::toResponse)
                 .toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     @GetMapping("/{id}")
     @Operation(summary = "Buscar usuário por ID", description = "Retorna os dados de um usuário específico")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<UsuarioResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioMapper.toResponse(usuarioService.buscarPorId(id)));
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar usuário", description = "Atualiza os dados de um usuário existente")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
                                                      @Valid @RequestBody UsuarioUpdateRequest request) {
         Usuario atualizado = usuarioService.atualizar(id, request);
         return ResponseEntity.ok(usuarioMapper.toResponse(atualizado));
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     @DeleteMapping("/{id}")
     @Operation(summary = "Remover usuário", description = "Exclui um usuário pelo ID")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         usuarioService.deletar(id);
         return ResponseEntity.noContent().build();

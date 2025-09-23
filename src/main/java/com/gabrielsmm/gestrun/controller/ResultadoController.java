@@ -47,7 +47,7 @@ public class ResultadoController {
 
     @PostMapping
     @Operation(summary = "Criar resultado")
-    @PreAuthorize("hasRole('ADMIN') or @resultadoSecurity.podeGerenciar(#id, principal)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<ResultadoResponse> criar(@Valid @RequestBody ResultadoInsertRequest request) {
         Resultado criado = resultadoService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(resultadoMapper.toResponse(criado));
@@ -55,7 +55,7 @@ public class ResultadoController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar resultado")
-    @PreAuthorize("hasRole('ADMIN') or @resultadoSecurity.podeGerenciar(#id, principal)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<ResultadoResponse> atualizar(@PathVariable Long id,
                                                        @Valid @RequestBody ResultadoUpdateRequest request) {
         Resultado atualizado = resultadoService.atualizar(id, request);
@@ -64,7 +64,7 @@ public class ResultadoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar resultado")
-    @PreAuthorize("hasRole('ADMIN') or @resultadoSecurity.podeGerenciar(#id, principal)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         resultadoService.deletar(id);
         return ResponseEntity.noContent().build();

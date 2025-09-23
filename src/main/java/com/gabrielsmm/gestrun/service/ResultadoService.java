@@ -8,6 +8,7 @@ import com.gabrielsmm.gestrun.exception.RecursoDuplicadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
 import com.gabrielsmm.gestrun.mapper.ResultadoMapper;
 import com.gabrielsmm.gestrun.repository.ResultadoRepository;
+import com.gabrielsmm.gestrun.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,11 @@ public class ResultadoService {
     public Resultado criar(ResultadoInsertRequest request) {
         Inscricao inscricao = inscricaoService.buscarPorId(request.inscricaoId());
 
+        if (!SecurityUtils.usuarioLogadoEhAdmin() &&
+                !inscricao.getCorrida().getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
+            throw new RecursoNaoEncontradoException("Você não tem permissão para adicionar resultados a esta inscrição");
+        }
+
         if (resultadoRepository.existsByInscricaoId(inscricao.getId())) {
             throw new RecursoDuplicadoException("Já existe um resultado cadastrado para a inscrição com id " + inscricao.getId());
         }
@@ -48,15 +54,24 @@ public class ResultadoService {
     public Resultado atualizar(Long id, ResultadoUpdateRequest request) {
         Resultado atual = buscarPorId(id);
 
+        if (!SecurityUtils.usuarioLogadoEhAdmin() &&
+                !atual.getInscricao().getCorrida().getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
+            throw new RecursoNaoEncontradoException("Você não tem permissão para atualizar este resultado");
+        }
+
         resultadoMapper.updateEntityFromDto(request, atual);
 
         return resultadoRepository.save(atual);
     }
 
     public void deletar(Long id) {
-        if (!resultadoRepository.existsById(id)) {
-            throw new RecursoNaoEncontradoException("Resultado com id " + id + " não foi encontrado");
+        Resultado resultado = buscarPorId(id);
+
+        if (!SecurityUtils.usuarioLogadoEhAdmin() &&
+                !resultado.getInscricao().getCorrida().getOrganizador().getId().equals(SecurityUtils.getUsuarioIdLogado())) {
+            throw new RecursoNaoEncontradoException("Você não tem permissão para deletar este resultado");
         }
+
         resultadoRepository.deleteById(id);
     }
 

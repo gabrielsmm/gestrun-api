@@ -30,7 +30,6 @@ public class CorridaController {
     private final CorridaService corridaService;
     private final CorridaMapper corridaMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','CORREDOR')")
     @GetMapping
     @Operation(summary = "Listar todas as corridas")
     public List<CorridaResponse> listar() {
@@ -39,16 +38,15 @@ public class CorridaController {
                 .toList();
     }
 
-    @PreAuthorize("hasRole('ORGANIZADOR')")
     @GetMapping("/organizador")
     @Operation(summary = "Listar corridas do organizador autenticado")
+    @PreAuthorize("hasRole('ORGANIZADOR')")
     public List<CorridaResponse> listarPorOrganizador(@AuthenticationPrincipal UsuarioDetails usuarioDetails) {
         return corridaService.listarPorOrganizador(usuarioDetails.getId()).stream()
                 .map(corridaMapper::toResponse)
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','ORGANIZADOR','CORREDOR')")
     @GetMapping("/{id}")
     @Operation(summary = "Buscar corrida por ID")
     public ResponseEntity<CorridaResponse> buscar(@PathVariable Long id) {
@@ -56,27 +54,27 @@ public class CorridaController {
         return ResponseEntity.ok(corridaMapper.toResponse(corrida));
     }
 
-    @PreAuthorize("hasRole('ORGANIZADOR')")
     @PostMapping
     @Operation(summary = "Criar corrida")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<CorridaResponse> criar(@RequestBody @Valid CorridaInsertRequest request,
                                                  @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
         Corrida criada = corridaService.criar(usuarioDetails.getId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(corridaMapper.toResponse(criada));
     }
 
-    @PreAuthorize("hasRole('ADMIN') or @corridaSecurity.isOrganizador(#id, principal.id)")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar corrida")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<CorridaResponse> atualizar(@PathVariable Long id,
                                                      @RequestBody @Valid CorridaUpdateRequest request) {
         Corrida corridaAtualizada = corridaService.atualizar(id, request);
         return ResponseEntity.ok(corridaMapper.toResponse(corridaAtualizada));
     }
 
-    @PreAuthorize("hasRole('ADMIN') or @corridaSecurity.isOrganizador(#id, principal.id)")
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar corrida")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         corridaService.deletar(id);
         return ResponseEntity.noContent().build();

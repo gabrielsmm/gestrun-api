@@ -29,9 +29,9 @@ public class InscricaoController {
     private final InscricaoService inscricaoService;
     private final InscricaoMapper inscricaoMapper;
 
-    @PreAuthorize("@corridaSecurity.isOrganizador(authentication, #corridaId)")
     @GetMapping
     @Operation(summary = "Listar inscrições de uma corrida")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public List<InscricaoResponse> listar(@PathVariable Long corridaId) {
         return inscricaoService.listarPorCorrida(corridaId).stream()
                 .map(inscricaoMapper::toResponse)
@@ -57,9 +57,9 @@ public class InscricaoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(inscricaoMapper.toResponse(criada));
     }
 
-    @PreAuthorize("@corridaSecurity.isOrganizador(authentication, #corridaId)")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar inscrição")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<InscricaoResponse> atualizar(@PathVariable Long corridaId,
                                                        @PathVariable Long id,
                                                        @Valid @RequestBody InscricaoUpdateRequest request) {
@@ -67,9 +67,9 @@ public class InscricaoController {
         return ResponseEntity.ok(inscricaoMapper.toResponse(atualizada));
     }
 
-    @PreAuthorize("@corridaSecurity.isOrganizador(authentication, #corridaId)")
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar inscrição")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long corridaId,
                                         @PathVariable Long id) {
         inscricaoService.deletar(id);

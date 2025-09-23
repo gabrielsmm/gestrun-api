@@ -44,18 +44,18 @@ public class CategoriaController {
         return ResponseEntity.ok(categoriaMapper.toResponse(categoria));
     }
 
-    @PreAuthorize("@corridaSecurity.isOrganizador(authentication, #corridaId)")
     @PostMapping
     @Operation(summary = "Criar categoria em uma corrida")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<CategoriaResponse> criar(@PathVariable Long corridaId,
                                                    @Valid @RequestBody CategoriaInsertRequest request) {
         Categoria criada = categoriaService.criar(corridaId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaMapper.toResponse(criada));
     }
 
-    @PreAuthorize("@categoriaSecurity.isOrganizador(authentication, #id)")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar categoria")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<CategoriaResponse> atualizar(@PathVariable Long corridaId,
                                                        @PathVariable Long id,
                                                        @Valid @RequestBody CategoriaUpdateRequest request) {
@@ -63,9 +63,9 @@ public class CategoriaController {
         return ResponseEntity.ok(categoriaMapper.toResponse(atualizada));
     }
 
-    @PreAuthorize("@categoriaSecurity.isOrganizador(authentication, #id)")
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar categoria")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long corridaId,
                                         @PathVariable Long id) {
         categoriaService.deletar(id);
