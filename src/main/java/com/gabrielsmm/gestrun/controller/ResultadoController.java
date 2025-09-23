@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/resultados")
 @RequiredArgsConstructor
-@Tag(name = "Resultados", description = "Gerenciamento de resultados de corridas")
+@Tag(name = "6. Resultados", description = "Gerenciamento de resultados de corridas")
 @SecurityRequirement(name = "Bearer Authentication")
 public class ResultadoController {
 

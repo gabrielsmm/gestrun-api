@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/corridas/{corridaId}/inscricoes")
 @RequiredArgsConstructor
-@Tag(name = "Inscrições", description = "Gerenciamento de inscrições")
+@Tag(name = "5. Inscrições", description = "Gerenciamento de inscrições")
 @SecurityRequirement(name = "Bearer Authentication")
 public class InscricaoController {
 

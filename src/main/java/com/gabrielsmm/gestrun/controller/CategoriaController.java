@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/corridas/{corridaId}/categorias")
 @RequiredArgsConstructor
-@Tag(name = "Categorias", description = "Gerenciamento de categorias")
+@Tag(name = "4. Categorias", description = "Gerenciamento de categorias")
 @SecurityRequirement(name = "Bearer Authentication")
 public class CategoriaController {
 
