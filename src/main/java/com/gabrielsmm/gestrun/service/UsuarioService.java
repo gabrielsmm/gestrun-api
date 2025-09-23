@@ -36,7 +36,7 @@ public class UsuarioService {
     }
 
     public Usuario criar(UsuarioInsertRequest request) {
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
+        if (usuarioRepository.existsByEmail(request.email())) {
             throw new RecursoDuplicadoException("Email já cadastrado");
         }
 
@@ -44,12 +44,12 @@ public class UsuarioService {
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario.setDataCriacao(LocalDateTime.now());
 
-        if (request.getPerfil() == null) {
+        if (request.perfil() == null) {
             usuario.setPerfil(Perfil.ORGANIZADOR);
-        } else if (request.getPerfil() == Perfil.ADMIN && !SecurityUtils.usuarioLogadoEhAdmin()) {
+        } else if (request.perfil() == Perfil.ADMIN && !SecurityUtils.usuarioLogadoEhAdmin()) {
             throw new AcessoNegadoException("somente ADMIN pode criar outro ADMIN");
         } else {
-            usuario.setPerfil(request.getPerfil());
+            usuario.setPerfil(request.perfil());
         }
 
         return usuarioRepository.save(usuario);
@@ -59,25 +59,25 @@ public class UsuarioService {
     public Usuario atualizar(Long id, UsuarioUpdateRequest request) {
         Usuario atual = buscarPorId(id);
 
-        if (request.getEmail() != null && !request.getEmail().equals(atual.getEmail())) {
-            if (usuarioRepository.existsByEmail(request.getEmail())) {
+        if (request.email() != null && !request.email().equals(atual.getEmail())) {
+            if (usuarioRepository.existsByEmail(request.email())) {
                 throw new RecursoDuplicadoException("Email já cadastrado");
             }
-            atual.setEmail(request.getEmail());
+            atual.setEmail(request.email());
+        }
+
+        if (request.perfil() != null && request.perfil() != atual.getPerfil()) {
+            if (!SecurityUtils.usuarioLogadoEhAdmin()) {
+                throw new AcessoNegadoException("Somente ADMIN pode alterar o perfil de um usuário");
+            }
+            atual.setPerfil(request.perfil());
         }
 
         usuarioMapper.updateEntityFromDto(request, atual);
 
         // se senha nova for fornecida, re-hash
-        if (request.getSenha() != null && !request.getSenha().isBlank()) {
-            atual.setSenha(passwordEncoder.encode(request.getSenha()));
-        }
-
-        if (request.getPerfil() != null && request.getPerfil() != atual.getPerfil()) {
-            if (!SecurityUtils.usuarioLogadoEhAdmin()) {
-                throw new AcessoNegadoException("Somente ADMIN pode alterar o perfil de um usuário");
-            }
-            atual.setPerfil(request.getPerfil());
+        if (request.senha() != null && !request.senha().isBlank()) {
+            atual.setSenha(passwordEncoder.encode(request.senha()));
         }
 
         return usuarioRepository.save(atual);
