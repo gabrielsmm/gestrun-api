@@ -9,7 +9,6 @@ import com.gabrielsmm.gestrun.service.InscricaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,7 +39,6 @@ public class InscricaoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar inscrição por ID")
-    @PermitAll
     public ResponseEntity<InscricaoResponse> buscar(@PathVariable Long id,
                                                     @RequestParam String documentoOuEmail) {
         Inscricao inscricao = inscricaoService.buscarPublico(id, documentoOuEmail);
@@ -49,7 +47,6 @@ public class InscricaoController {
 
     @PostMapping
     @Operation(summary = "Criar inscrição em uma corrida")
-    @PermitAll
     public ResponseEntity<InscricaoResponse> criar(@Valid @RequestBody InscricaoInsertRequest request) {
         Inscricao criada = inscricaoService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(inscricaoMapper.toResponse(criada));

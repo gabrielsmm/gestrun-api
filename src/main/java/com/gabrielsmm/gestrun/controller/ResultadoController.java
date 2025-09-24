@@ -9,7 +9,6 @@ import com.gabrielsmm.gestrun.service.ResultadoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,6 @@ public class ResultadoController {
 
     @GetMapping("/corrida/{corridaId}")
     @Operation(summary = "Listar resultados por corrida (ordenados por tempo)")
-    @PermitAll
     public List<ResultadoResponse> listarPorCorrida(@PathVariable Long corridaId) {
         return resultadoService.listarPorCorrida(corridaId).stream()
                 .map(resultadoMapper::toResponse)
@@ -40,7 +38,6 @@ public class ResultadoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar resultado por ID")
-    @PermitAll
     public ResponseEntity<ResultadoResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(resultadoMapper.toResponse(resultadoService.buscarPorId(id)));
     }
