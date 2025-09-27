@@ -2,6 +2,7 @@ package com.gabrielsmm.gestrun.security;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.domain.enums.Perfil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Getter
 @RequiredArgsConstructor
 public class UsuarioDetails implements UserDetails {
 

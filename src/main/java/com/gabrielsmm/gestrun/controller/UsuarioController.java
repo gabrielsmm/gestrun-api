@@ -4,6 +4,7 @@ import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
+import com.gabrielsmm.gestrun.security.UsuarioDetails;
 import com.gabrielsmm.gestrun.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +35,13 @@ public class UsuarioController {
         return usuarioService.listar().stream()
                 .map(usuarioMapper::toResponse)
                 .toList();
+    }
+
+    @GetMapping("/perfil")
+    @Operation(summary = "Perfil do usuário autenticado", description = "Retorna os dados do usuário atualmente autenticado")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UsuarioResponse> perfil(@AuthenticationPrincipal UsuarioDetails usuarioDetails) {
+        return ResponseEntity.ok(usuarioMapper.toResponse(usuarioDetails.getUsuario()));
     }
 
     @GetMapping("/{id}")
