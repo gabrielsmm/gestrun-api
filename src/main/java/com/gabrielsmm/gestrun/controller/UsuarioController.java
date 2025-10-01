@@ -1,6 +1,7 @@
 package com.gabrielsmm.gestrun.controller;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
+import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
@@ -11,12 +12,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,12 +29,17 @@ public class UsuarioController {
     private final UsuarioMapper usuarioMapper;
 
     @GetMapping
-    @Operation(summary = "Listar todos os usuários", description = "Retorna todos os usuários cadastrados")
+    @Operation(summary = "Listar todos os usuários de forma paginada", description = "Retorna os usuário cadastrados de forma paginada")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UsuarioResponse> listar() {
-        return usuarioService.listar().stream()
-                .map(usuarioMapper::toResponse)
-                .toList();
+    public PaginacaoResponse<UsuarioResponse> listarPaginado(
+            @RequestParam(value="pagina", defaultValue="0") Integer pagina,
+            @RequestParam(value="registrosPorPagina", defaultValue="10") Integer registrosPorPagina,
+            @RequestParam(value="ordem", defaultValue="id") String ordem,
+            @RequestParam(value="direcao", defaultValue="ASC") String direcao,
+            @RequestParam(value="filtro", required = false) String filtro
+    ) {
+        Page<Usuario> usuarios = usuarioService.listarPaginado(pagina, registrosPorPagina, ordem, direcao, filtro);
+        return usuarioMapper.toPaginacaoResponse(usuarios);
     }
 
     @GetMapping("/perfil")

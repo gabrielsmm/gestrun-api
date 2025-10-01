@@ -12,11 +12,13 @@ import com.gabrielsmm.gestrun.repository.UsuarioRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -26,8 +28,10 @@ public class UsuarioService {
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public List<Usuario> listar() {
-        return usuarioRepository.findAll();
+    public Page<Usuario> listarPaginado(Integer pagina, Integer registrosPorPagina, String ordem, String direcao, String filtro) {
+        PageRequest pageRequest = PageRequest.of(pagina, registrosPorPagina, Sort.Direction.valueOf(direcao), ordem);
+
+        return usuarioRepository.listarPaginado(filtro, pageRequest);
     }
 
     public Usuario buscarPorId(Long id) {
