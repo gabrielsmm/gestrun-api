@@ -4,6 +4,7 @@ import com.gabrielsmm.gestrun.domain.Corrida;
 import com.gabrielsmm.gestrun.dto.CorridaInsertRequest;
 import com.gabrielsmm.gestrun.dto.CorridaResponse;
 import com.gabrielsmm.gestrun.dto.CorridaUpdateRequest;
+import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
 import com.gabrielsmm.gestrun.mapper.CorridaMapper;
 import com.gabrielsmm.gestrun.security.UsuarioDetails;
 import com.gabrielsmm.gestrun.service.CorridaService;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,12 +41,18 @@ public class CorridaController {
     }
 
     @GetMapping("/organizador")
-    @Operation(summary = "Listar corridas do organizador autenticado")
-    @PreAuthorize("hasRole('ORGANIZADOR')")
-    public List<CorridaResponse> listarPorOrganizador(@AuthenticationPrincipal UsuarioDetails usuarioDetails) {
-        return corridaService.listarPorOrganizador(usuarioDetails.getId()).stream()
-                .map(corridaMapper::toResponse)
-                .toList();
+    @Operation(summary = "Listar corridas do organizador autenticado de forma paginada")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
+    public PaginacaoResponse<CorridaResponse> listarPorOrganizadorPaginado(
+            @AuthenticationPrincipal UsuarioDetails usuarioDetails,
+            @RequestParam(value="pagina", defaultValue="0") Integer pagina,
+            @RequestParam(value="registrosPorPagina", defaultValue="10") Integer registrosPorPagina,
+            @RequestParam(value="ordem", defaultValue="id") String ordem,
+            @RequestParam(value="direcao", defaultValue="ASC") String direcao,
+            @RequestParam(value="filtro", required = false) String filtro
+    ) {
+        Page<Corrida> corridas = corridaService.listarPorOrganizadorPaginado(usuarioDetails.getId(), pagina, registrosPorPagina, ordem, direcao, filtro);
+        return corridaMapper.toPaginacaoResponse(corridas);
     }
 
     @GetMapping("/{id}")

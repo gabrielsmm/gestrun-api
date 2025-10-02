@@ -10,6 +10,9 @@ import com.gabrielsmm.gestrun.mapper.CorridaMapper;
 import com.gabrielsmm.gestrun.repository.CorridaRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +30,10 @@ public class CorridaService {
         return corridaRepository.findAll();
     }
 
-    public List<Corrida> listarPorOrganizador(Long organizadorId) {
-        return corridaRepository.findByOrganizadorId(organizadorId);
+    public Page<Corrida> listarPorOrganizadorPaginado(Long organizadorId, Integer pagina, Integer registrosPorPagina, String ordem, String direcao, String filtro) {
+        PageRequest pageRequest = PageRequest.of(pagina, registrosPorPagina, Sort.Direction.valueOf(direcao), ordem);
+
+        return corridaRepository.listarPorOrganizadorPaginado(organizadorId, filtro, pageRequest);
     }
 
     public Corrida buscarPorId(Long id) {

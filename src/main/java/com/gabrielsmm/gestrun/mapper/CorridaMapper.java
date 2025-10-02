@@ -4,7 +4,9 @@ import com.gabrielsmm.gestrun.domain.Corrida;
 import com.gabrielsmm.gestrun.dto.CorridaInsertRequest;
 import com.gabrielsmm.gestrun.dto.CorridaResponse;
 import com.gabrielsmm.gestrun.dto.CorridaUpdateRequest;
+import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring")
 public interface CorridaMapper {
@@ -19,5 +21,12 @@ public interface CorridaMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(CorridaUpdateRequest request, @MappingTarget Corrida entity);
+
+    @Mapping(target = "conteudo", source = "content")
+    @Mapping(target = "totalElementos", source = "totalElements")
+    @Mapping(target = "totalPaginas", source = "totalPages")
+    @Mapping(target = "tamanho", source = "size")
+    @Mapping(target = "pagina", source = "number")
+    PaginacaoResponse<CorridaResponse> toPaginacaoResponse(Page<Corrida> page);
 
 }
