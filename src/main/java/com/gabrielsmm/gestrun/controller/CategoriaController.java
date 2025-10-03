@@ -4,6 +4,7 @@ import com.gabrielsmm.gestrun.domain.Categoria;
 import com.gabrielsmm.gestrun.dto.CategoriaInsertRequest;
 import com.gabrielsmm.gestrun.dto.CategoriaResponse;
 import com.gabrielsmm.gestrun.dto.CategoriaUpdateRequest;
+import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
 import com.gabrielsmm.gestrun.mapper.CategoriaMapper;
 import com.gabrielsmm.gestrun.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,12 +12,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/categorias")
@@ -29,11 +29,17 @@ public class CategoriaController {
     private final CategoriaMapper categoriaMapper;
 
     @GetMapping("/corrida/{corridaId}")
-    @Operation(summary = "Listar categorias de uma corrida")
-    public List<CategoriaResponse> listar(@PathVariable Long corridaId) {
-        return categoriaService.listarPorCorrida(corridaId).stream()
-                .map(categoriaMapper::toResponse)
-                .toList();
+    @Operation(summary = "Listar categorias de uma corrida de forma paginada")
+    public PaginacaoResponse<CategoriaResponse> listarPorCorridaPaginado(
+            @PathVariable Long corridaId,
+            @RequestParam(value="pagina", defaultValue="0") Integer pagina,
+            @RequestParam(value="registrosPorPagina", defaultValue="10") Integer registrosPorPagina,
+            @RequestParam(value="ordem", defaultValue="id") String ordem,
+            @RequestParam(value="direcao", defaultValue="ASC") String direcao,
+            @RequestParam(value="filtro", required = false) String filtro
+    ) {
+        Page<Categoria> categorias = categoriaService.listarPorCorridaPaginado(corridaId, pagina, registrosPorPagina, ordem, direcao, filtro);
+        return categoriaMapper.toPaginacaoResponse(categorias);
     }
 
     @GetMapping("/{id}")

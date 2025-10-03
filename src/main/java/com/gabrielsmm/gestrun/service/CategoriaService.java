@@ -10,9 +10,10 @@ import com.gabrielsmm.gestrun.mapper.CategoriaMapper;
 import com.gabrielsmm.gestrun.repository.CategoriaRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -22,8 +23,10 @@ public class CategoriaService {
     private final CorridaService corridaService;
     private final CategoriaMapper categoriaMapper;
 
-    public List<Categoria> listarPorCorrida(Long corridaId) {
-        return categoriaRepository.findByCorridaId(corridaId);
+    public Page<Categoria> listarPorCorridaPaginado(Long corridaId, Integer pagina, Integer registrosPorPagina, String ordem, String direcao, String filtro) {
+        PageRequest pageRequest = PageRequest.of(pagina, registrosPorPagina, Sort.Direction.valueOf(direcao), ordem);
+
+        return categoriaRepository.listarPorCorridaPaginado(corridaId, filtro, pageRequest);
     }
 
     public Categoria buscarPorId(Long id) {
