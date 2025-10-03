@@ -10,9 +10,10 @@ import com.gabrielsmm.gestrun.mapper.InscricaoMapper;
 import com.gabrielsmm.gestrun.repository.InscricaoRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +23,7 @@ public class InscricaoService {
     private final CorridaService corridaService;
     private final InscricaoMapper inscricaoMapper;
 
-    public List<Inscricao> listarPorCorrida(Long corridaId) {
+    public Page<Inscricao> listarPorCorridaPaginado(Long corridaId, Integer pagina, Integer registrosPorPagina, String ordem, String direcao, String filtro) {
         Corrida corrida = corridaService.buscarPorId(corridaId);
 
         if (!SecurityUtils.usuarioLogadoEhAdmin() &&
@@ -30,7 +31,9 @@ public class InscricaoService {
             throw new AcessoNegadoException("Você não tem permissão para listar as inscrições desta corrida");
         }
 
-        return inscricaoRepository.findByCorridaId(corridaId);
+        PageRequest pageRequest = PageRequest.of(pagina, registrosPorPagina, Sort.Direction.valueOf(direcao), ordem);
+
+        return inscricaoRepository.listarPorCorridaPaginado(corridaId, filtro, pageRequest);
     }
 
     public Inscricao buscarPorId(Long id) {
