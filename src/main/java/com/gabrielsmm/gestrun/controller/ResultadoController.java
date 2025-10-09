@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/resultados")
 @RequiredArgsConstructor
@@ -63,6 +65,14 @@ public class ResultadoController {
                                                        @Valid @RequestBody ResultadoUpdateRequest request) {
         Resultado atualizado = resultadoService.atualizar(id, request);
         return ResponseEntity.ok(resultadoMapper.toResponse(atualizado));
+    }
+
+    @PutMapping("/lote")
+    @Operation(summary = "Atualizar resultados em lote")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
+    public ResponseEntity<Void> atualizarLote(@RequestBody List<ResultadoUpdateRequest> resultados) {
+        resultadoService.atualizarLote(resultados);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

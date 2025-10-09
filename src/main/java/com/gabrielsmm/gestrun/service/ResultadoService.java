@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -66,6 +68,15 @@ public class ResultadoService {
         resultadoMapper.updateEntityFromDto(request, atual);
 
         return resultadoRepository.save(atual);
+    }
+
+    public void atualizarLote(List<ResultadoUpdateRequest> resultados) {
+        List<Resultado> atualizados = new ArrayList<>();
+        for (ResultadoUpdateRequest req : resultados) {
+            Resultado atualizado = atualizar(req.id(), req);
+            atualizados.add(atualizado);
+        }
+        resultadoRepository.saveAll(atualizados);
     }
 
     public void deletar(Long id) {
