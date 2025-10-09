@@ -43,12 +43,21 @@ public class InscricaoController {
         return inscricaoMapper.toPaginacaoResponse(inscricoes);
     }
 
-
     @GetMapping("/{id}")
     @Operation(summary = "Buscar inscrição por ID")
     public ResponseEntity<InscricaoResponse> buscar(@PathVariable Long id,
                                                     @RequestParam String documentoOuEmail) {
         Inscricao inscricao = inscricaoService.buscarPublico(id, documentoOuEmail);
+        return ResponseEntity.ok(inscricaoMapper.toResponse(inscricao));
+    }
+
+    @GetMapping("/corrida/{corridaId}/numeroPeito/{numeroPeito}")
+    @Operation(summary = "Buscar inscrição pelo número de peito e corrida")
+    public ResponseEntity<InscricaoResponse> buscarPorCorridaENumeroPeito(
+            @PathVariable Long corridaId,
+            @PathVariable Integer numeroPeito
+    ) {
+        Inscricao inscricao = inscricaoService.buscarPorCorridaENumeroPeito(corridaId, numeroPeito);
         return ResponseEntity.ok(inscricaoMapper.toResponse(inscricao));
     }
 

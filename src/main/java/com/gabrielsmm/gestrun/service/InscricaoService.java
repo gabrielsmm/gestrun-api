@@ -41,6 +41,12 @@ public class InscricaoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Inscrição com id " + id + " não foi encontrada"));
     }
 
+    public Inscricao buscarPorCorridaENumeroPeito(Long corridaId, Integer numeroPeito) {
+        return inscricaoRepository.findByCorridaIdAndNumeroPeito(corridaId, numeroPeito)
+                .orElseThrow(() ->
+                        new RecursoNaoEncontradoException("Inscrição com numero de peito " + numeroPeito + " não foi encontrada para a corrida " + corridaId));
+    }
+
     public Inscricao buscarPublico(Long inscricaoId, String documentoOuEmail) {
         Inscricao inscricao = buscarPorId(inscricaoId);
 
