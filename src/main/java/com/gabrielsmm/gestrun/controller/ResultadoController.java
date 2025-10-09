@@ -1,6 +1,7 @@
 package com.gabrielsmm.gestrun.controller;
 
 import com.gabrielsmm.gestrun.domain.Resultado;
+import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
 import com.gabrielsmm.gestrun.dto.ResultadoInsertRequest;
 import com.gabrielsmm.gestrun.dto.ResultadoResponse;
 import com.gabrielsmm.gestrun.dto.ResultadoUpdateRequest;
@@ -11,12 +12,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/resultados")
@@ -29,11 +29,17 @@ public class ResultadoController {
     private final ResultadoMapper resultadoMapper;
 
     @GetMapping("/corrida/{corridaId}")
-    @Operation(summary = "Listar resultados por corrida (ordenados por tempo)")
-    public List<ResultadoResponse> listarPorCorrida(@PathVariable Long corridaId) {
-        return resultadoService.listarPorCorrida(corridaId).stream()
-                .map(resultadoMapper::toResponse)
-                .toList();
+    @Operation(summary = "Listar resultados por corrida de forma paginada (ordenados por tempo)")
+    public PaginacaoResponse<ResultadoResponse> listarPorCorridaPaginadoOrdenadoPorTempo(
+            @PathVariable Long corridaId,
+            @RequestParam(value="pagina", defaultValue="0") Integer pagina,
+            @RequestParam(value="registrosPorPagina", defaultValue="10") Integer registrosPorPagina,
+            @RequestParam(value="ordem", defaultValue="id") String ordem,
+            @RequestParam(value="direcao", defaultValue="ASC") String direcao,
+            @RequestParam(value="filtro", required = false) String filtro
+    ) {
+        Page<Resultado> resultados = resultadoService.listarPorCorridaPaginadoOrdenadoPorTempo(corridaId, pagina, registrosPorPagina, ordem, direcao, filtro);
+        return resultadoMapper.toPaginacaoResponse(resultados);
     }
 
     @GetMapping("/{id}")

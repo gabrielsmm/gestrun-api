@@ -10,10 +10,12 @@ import com.gabrielsmm.gestrun.mapper.ResultadoMapper;
 import com.gabrielsmm.gestrun.repository.ResultadoRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -23,8 +25,10 @@ public class ResultadoService {
     private final InscricaoService inscricaoService;
     private final ResultadoMapper resultadoMapper;
 
-    public List<Resultado> listarPorCorrida(Long corridaId) {
-        return resultadoRepository.findAllByInscricaoCorridaIdOrderByTempoAsc(corridaId);
+    public Page<Resultado> listarPorCorridaPaginadoOrdenadoPorTempo(Long corridaId, Integer pagina, Integer registrosPorPagina, String ordem, String direcao, String filtro) {
+        PageRequest pageRequest = PageRequest.of(pagina, registrosPorPagina, Sort.Direction.valueOf(direcao), ordem);
+
+        return resultadoRepository.listarPorCorridaPaginadoOrdenadoPorTempo(corridaId, filtro, pageRequest);
     }
 
     public Resultado buscarPorId(Long id) {

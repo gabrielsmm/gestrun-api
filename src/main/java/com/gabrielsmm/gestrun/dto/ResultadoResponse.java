@@ -7,6 +7,7 @@ public record ResultadoResponse(
         Long id,
         Long inscricaoId,
         String nomeCorredor,
+        Integer numeroPeito,
         LocalTime tempo,
         Integer posicaoGeral,
         LocalDateTime dataCriacao
