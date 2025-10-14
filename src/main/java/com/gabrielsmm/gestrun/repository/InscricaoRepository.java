@@ -1,6 +1,7 @@
 package com.gabrielsmm.gestrun.repository;
 
 import com.gabrielsmm.gestrun.domain.Inscricao;
+import com.gabrielsmm.gestrun.domain.enums.StatusInscricao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
 
-    Optional<Inscricao> findByCorridaIdAndNumeroPeito(Long corridaId, Integer numeroPeito);
+    Optional<Inscricao> findByCorridaIdAndNumeroPeitoAndStatus(Long corridaId, Integer numeroPeito, StatusInscricao status);
 
     @Query("""
         SELECT i

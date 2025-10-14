@@ -52,12 +52,12 @@ public class InscricaoController {
     }
 
     @GetMapping("/corrida/{corridaId}/numeroPeito/{numeroPeito}")
-    @Operation(summary = "Buscar inscrição pelo número de peito e corrida")
-    public ResponseEntity<InscricaoResponse> buscarPorCorridaENumeroPeito(
+    @Operation(summary = "Buscar inscrição confirmada por corrida e número de peito")
+    public ResponseEntity<InscricaoResponse> buscarConfirmadaPorCorridaENumeroPeito(
             @PathVariable Long corridaId,
             @PathVariable Integer numeroPeito
     ) {
-        Inscricao inscricao = inscricaoService.buscarPorCorridaENumeroPeito(corridaId, numeroPeito);
+        Inscricao inscricao = inscricaoService.buscarConfirmadaPorCorridaENumeroPeito(corridaId, numeroPeito);
         return ResponseEntity.ok(inscricaoMapper.toResponse(inscricao));
     }
 

@@ -2,6 +2,7 @@ package com.gabrielsmm.gestrun.service;
 
 import com.gabrielsmm.gestrun.domain.Corrida;
 import com.gabrielsmm.gestrun.domain.Inscricao;
+import com.gabrielsmm.gestrun.domain.enums.StatusInscricao;
 import com.gabrielsmm.gestrun.dto.InscricaoInsertRequest;
 import com.gabrielsmm.gestrun.dto.InscricaoUpdateRequest;
 import com.gabrielsmm.gestrun.exception.AcessoNegadoException;
@@ -41,10 +42,10 @@ public class InscricaoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Inscrição com id " + id + " não foi encontrada"));
     }
 
-    public Inscricao buscarPorCorridaENumeroPeito(Long corridaId, Integer numeroPeito) {
-        return inscricaoRepository.findByCorridaIdAndNumeroPeito(corridaId, numeroPeito)
+    public Inscricao buscarConfirmadaPorCorridaENumeroPeito(Long corridaId, Integer numeroPeito) {
+        return inscricaoRepository.findByCorridaIdAndNumeroPeitoAndStatus(corridaId, numeroPeito, StatusInscricao.CONFIRMADA)
                 .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Inscrição com numero de peito " + numeroPeito + " não foi encontrada para a corrida " + corridaId));
+                        new RecursoNaoEncontradoException("Inscrição confirmada com número de peito " + numeroPeito + " não foi encontrada para a corrida " + corridaId));
     }
 
     public Inscricao buscarPublico(Long inscricaoId, String documentoOuEmail) {
