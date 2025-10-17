@@ -1,6 +1,7 @@
 package com.gabrielsmm.gestrun.service;
 
 import com.gabrielsmm.gestrun.dto.ResultadoRelatorioDTO;
+import com.gabrielsmm.gestrun.exception.RelatorioSemDadosException;
 import com.gabrielsmm.gestrun.repository.RelatorioResultadosRepository;
 import com.gabrielsmm.gestrun.util.RelatorioUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,7 @@ public class RelatorioResultadosService {
         List<ResultadoRelatorioDTO> resultados = relatorioResultadosRepository.buscarResultadoGeralPorCorrida(corridaId);
 
         if (resultados.isEmpty()) {
-            // TODO: Criar exceção personalizada
-            throw new JRException("Nenhum resultado encontrado para a corrida: " + nomeCorrida);
+            throw new RelatorioSemDadosException("Nenhum resultado encontrado para a corrida: " + nomeCorrida);
         }
 
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(resultados);

@@ -103,6 +103,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resposta);
     }
 
+    @ExceptionHandler(RelatorioSemDadosException.class)
+    public ResponseEntity<ErroResposta> handleRelatorioSemDados(RelatorioSemDadosException ex, HttpServletRequest request) {
+        ErroResposta resposta = buildErroResposta(
+                HttpStatus.NOT_FOUND,
+                "Relatório sem dados",
+                ex.getMessage(),
+                request
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+
     private ErroResposta buildErroResposta(HttpStatus status, String erro, String mensagem, HttpServletRequest request) {
         return new ErroResposta(
                 LocalDateTime.now(),
