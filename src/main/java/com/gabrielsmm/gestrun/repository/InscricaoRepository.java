@@ -14,6 +14,8 @@ public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
 
     Optional<Inscricao> findByCorridaIdAndNumeroPeitoAndStatus(Long corridaId, Integer numeroPeito, StatusInscricao status);
 
+    boolean existsByCorridaIdAndNumeroPeitoAndIdNot(Long corridaId, Integer numeroPeito, Long id);
+
     @Query("""
         SELECT i
         FROM Inscricao i

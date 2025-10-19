@@ -7,6 +7,7 @@ import com.gabrielsmm.gestrun.dto.InscricaoInsertRequest;
 import com.gabrielsmm.gestrun.dto.InscricaoUpdateRequest;
 import com.gabrielsmm.gestrun.exception.AcessoNegadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
+import com.gabrielsmm.gestrun.exception.ValidacaoException;
 import com.gabrielsmm.gestrun.mapper.InscricaoMapper;
 import com.gabrielsmm.gestrun.repository.InscricaoRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
@@ -74,13 +75,20 @@ public class InscricaoService {
             throw new AcessoNegadoException("Você não tem permissão para atualizar esta inscrição");
         }
 
-        if (request.status() != null) {
-            atual.setStatus(request.status());
+        if (request.numeroPeito() != null &&
+                inscricaoRepository.existsByCorridaIdAndNumeroPeitoAndIdNot(atual.getCorrida().getId(), request.numeroPeito(), id)) {
+            throw new ValidacaoException("Número de peito " + request.numeroPeito() + " já está atribuído a outra inscrição nesta corrida");
         }
 
-        if (request.numeroPeito() != null) {
-            atual.setNumeroPeito(request.numeroPeito());
+        if (request.numeroPeito() != null && request.status() == StatusInscricao.PENDENTE) {
+            throw new ValidacaoException("Para atribuir um número de peito, a inscrição deve estar confirmada");
         }
+
+        if (request.numeroPeito() == null && request.status() == StatusInscricao.CONFIRMADA) {
+            throw new ValidacaoException("Para confirmar uma inscrição, é necessário atribuir um número de peito");
+        }
+
+        inscricaoMapper.updateEntityFromDto(request, atual);
 
         return inscricaoRepository.save(atual);
     }

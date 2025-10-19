@@ -70,6 +70,17 @@ public class GlobalExceptionHandler {
     }
 
     // Exceções customizadas
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<ErroResposta> handleValidacaoException(ValidacaoException ex, HttpServletRequest request) {
+        ErroResposta resposta = buildErroResposta(
+                HttpStatus.BAD_REQUEST,
+                "Erro de validação",
+                ex.getMessage(),
+                request
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
+    }
+
     @ExceptionHandler(RecursoNaoEncontradoException.class)
     public ResponseEntity<ErroResposta> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex, HttpServletRequest request) {
         ErroResposta resposta = buildErroResposta(
