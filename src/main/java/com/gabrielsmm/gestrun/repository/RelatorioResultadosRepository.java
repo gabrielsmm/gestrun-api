@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface RelatorioResultadosRepository {
     List<ResultadoRelatorioDTO> buscarResultadoGeralPorCorrida(Long corridaId);
+
+    List<ResultadoRelatorioDTO> buscarResultadoPorCorridaEPorCategoria(Long corridaId, Long categoriaId);
 }

@@ -32,6 +32,16 @@ public class RelatorioController {
         return gerarResponse(relatorio, formato, "resultado_geral");
     }
 
+    @GetMapping("/resultados/categoria")
+    public ResponseEntity<byte[]> gerarResultadosPorCategoria(
+            @RequestParam(name = "corridaId") Long corridaId,
+            @RequestParam(name = "categoriaId") Long categoriaId,
+            @RequestParam(name = "formato", defaultValue = "pdf") String formato
+    ) throws JRException {
+        byte[] relatorio = relatorioResultadosService.gerarResultadosPorCategoria(corridaId, categoriaId, formato);
+        return gerarResponse(relatorio, formato, "resultado_categoria");
+    }
+
     private ResponseEntity<byte[]> gerarResponse(byte[] relatorio, String formato, String nomeArquivo) {
         String contentType = switch (formato.toLowerCase()) {
             case "pdf" -> MediaType.APPLICATION_PDF_VALUE;

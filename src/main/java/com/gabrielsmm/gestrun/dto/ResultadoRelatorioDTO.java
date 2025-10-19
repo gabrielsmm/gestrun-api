@@ -1,20 +1,17 @@
 package com.gabrielsmm.gestrun.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ResultadoRelatorioDTO {
 
-    private Integer posicaoGeral;
+    private Integer posicao;
     private Integer numeroPeito;
     private String nomeCorredor;
+    private Integer idade;
+    private String sexo;
     private String tempo;
-
-    public ResultadoRelatorioDTO(Integer posicaoGeral, Integer numeroPeito, String nomeCorredor, Object tempo) {
-        this.posicaoGeral = posicaoGeral;
-        this.numeroPeito = numeroPeito;
-        this.nomeCorredor = nomeCorredor;
-        this.tempo = tempo != null ? tempo.toString() : null;
-    }
 
 }
