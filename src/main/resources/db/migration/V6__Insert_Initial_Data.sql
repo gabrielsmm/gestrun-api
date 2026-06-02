@@ -5,20 +5,29 @@ ON CONFLICT DO NOTHING;
 -- Obs: senha deve ser hash real com BCrypt no backend
 
 -- 2. Criar uma corrida vinculada ao organizador
-INSERT INTO corridas (organizador_id, nome, data, local, distancia_km, regulamento)
-VALUES (1, 'Maratona da Cidade', '2025-10-20', 'Parque Central', 10.0, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+INSERT INTO corridas (organizador_id, nome, data, local, distancia_km, regulamento, inscricoes_abertura, inscricoes_encerramento)
+VALUES (
+    1,
+    'Maratona da Cidade',
+    '2025-10-20',
+    'Parque Central',
+    10.0,
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    '2025-07-01 08:00:00',
+    '2025-10-10 23:59:59'
+)
 ON CONFLICT DO NOTHING;
 
 -- 3. Criar categorias para a corrida
 INSERT INTO categorias (corrida_id, nome, idade_min, idade_max, sexo)
 VALUES
-(1, 'Masculino 18-29', 18, 29, 'M'),
-(1, 'Feminino 18-29', 18, 29, 'F')
+	(1, 'Masculino 18-29', 18, 29, 'M'),
+	(1, 'Feminino 18-29', 18, 29, 'F')
 ON CONFLICT DO NOTHING;
 
 -- 4. Criar inscrições (sem número de peito ainda)
 INSERT INTO inscricoes (corrida_id, nome_corredor, documento, data_nascimento, sexo, email, telefone, status)
 VALUES
-(1, 'Carlos Silva', '123456789', '1995-06-15', 'M', 'carlos@email.com', '11999998888', 'PENDENTE'),
-(1, 'Maria Souza', '987654321', '1997-03-20', 'F', 'maria@email.com', '11988887777', 'PENDENTE')
+	(1, 'Carlos Silva', '96670630034', '1995-06-15', 'M', 'carlos@email.com', '11999998888', 'PENDENTE'),
+	(1, 'Maria Souza', '25525236095 ', '1997-03-20', 'F', 'maria@email.com', '11988887777', 'PENDENTE')
 ON CONFLICT DO NOTHING;
