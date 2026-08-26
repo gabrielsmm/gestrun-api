@@ -2,8 +2,10 @@ package com.gabrielsmm.gestrun.config;
 
 import com.gabrielsmm.gestrun.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,12 +24,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @Configuration
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
 
-    private static final String[] AUTH_WHITELIST = {
-            "/auth/**",
+    @Value("${app.cors.allowed-origins}")
+    private List<String> allowedOrigins;
+
+    private static final String[] DOCUMENTACAO_PUBLICA = {
+            "/docs",
             "/docs/**",
             "/swagger-ui/**",
             "/api-docs/**"
@@ -39,7 +45,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(DOCUMENTACAO_PUBLICA).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/registrar").permitAll()
                         .requestMatchers(HttpMethod.GET,  "/api/resultados/corrida/*", "/api/resultados/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/inscricoes").permitAll()
                         .requestMatchers(HttpMethod.GET,  "/api/inscricoes/*").permitAll()
@@ -53,7 +60,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200", ""));
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

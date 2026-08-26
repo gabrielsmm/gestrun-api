@@ -3,6 +3,7 @@ package com.gabrielsmm.gestrun.controller;
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
+import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.security.UsuarioDetails;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,14 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final UsuarioMapper usuarioMapper;
+
+    @PostMapping
+    @Operation(summary = "Criar usuário", description = "Cria um usuário com perfil definido por um administrador")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponse> criar(@Valid @RequestBody UsuarioInsertRequest request) {
+        Usuario criado = usuarioService.criar(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(criado));
+    }
 
     @GetMapping
     @Operation(summary = "Listar todos os usuários de forma paginada", description = "Retorna os usuário cadastrados de forma paginada")

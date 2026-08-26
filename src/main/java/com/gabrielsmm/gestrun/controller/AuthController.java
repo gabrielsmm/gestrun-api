@@ -3,7 +3,7 @@ package com.gabrielsmm.gestrun.controller;
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.dto.LoginRequest;
 import com.gabrielsmm.gestrun.dto.LoginResponse;
-import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
+import com.gabrielsmm.gestrun.dto.RegistroOrganizadorRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.security.JwtUtil;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Tag(name = "1. Auth", description = "Autenticação e login")
 public class AuthController {
 
@@ -52,8 +54,8 @@ public class AuthController {
 
     @PostMapping("/registrar")
     @Operation(summary = "Registrar", description = "Registra um novo usuário")
-    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody UsuarioInsertRequest request) {
-        Usuario usuarioSalvo = usuarioService.criar(request);
+    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody RegistroOrganizadorRequest request) {
+        Usuario usuarioSalvo = usuarioService.registrarOrganizador(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(usuarioSalvo));
     }
 

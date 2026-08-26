@@ -2,6 +2,7 @@ package com.gabrielsmm.gestrun.mapper;
 
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
+import com.gabrielsmm.gestrun.dto.RegistroOrganizadorRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioResponse;
 import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
@@ -12,6 +13,11 @@ import org.springframework.data.domain.Page;
 public interface UsuarioMapper {
 
     Usuario toEntity(UsuarioInsertRequest dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "perfil", ignore = true)
+    @Mapping(target = "dataCriacao", ignore = true)
+    Usuario toEntity(RegistroOrganizadorRequest dto);
 
     UsuarioResponse toResponse(Usuario entity);
 

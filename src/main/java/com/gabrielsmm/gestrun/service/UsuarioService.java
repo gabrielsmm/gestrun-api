@@ -3,10 +3,12 @@ package com.gabrielsmm.gestrun.service;
 import com.gabrielsmm.gestrun.domain.Usuario;
 import com.gabrielsmm.gestrun.domain.enums.Perfil;
 import com.gabrielsmm.gestrun.dto.UsuarioInsertRequest;
+import com.gabrielsmm.gestrun.dto.RegistroOrganizadorRequest;
 import com.gabrielsmm.gestrun.dto.UsuarioUpdateRequest;
 import com.gabrielsmm.gestrun.exception.AcessoNegadoException;
 import com.gabrielsmm.gestrun.exception.RecursoDuplicadoException;
 import com.gabrielsmm.gestrun.exception.RecursoNaoEncontradoException;
+import com.gabrielsmm.gestrun.exception.ValidacaoException;
 import com.gabrielsmm.gestrun.mapper.UsuarioMapper;
 import com.gabrielsmm.gestrun.repository.UsuarioRepository;
 import com.gabrielsmm.gestrun.util.SecurityUtils;
@@ -29,6 +31,10 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     public Page<Usuario> listarPaginado(Integer pagina, Integer registrosPorPagina, String ordem, String direcao, String filtro) {
+        if (!SecurityUtils.usuarioLogadoEhAdmin()) {
+            throw new AcessoNegadoException("Somente ADMIN pode listar usuários");
+        }
+
         PageRequest pageRequest = PageRequest.of(pagina, registrosPorPagina, Sort.Direction.valueOf(direcao), ordem);
 
         return usuarioRepository.listarPaginado(filtro, pageRequest);
@@ -40,6 +46,10 @@ public class UsuarioService {
     }
 
     public Usuario criar(UsuarioInsertRequest request) {
+        if (!SecurityUtils.usuarioLogadoEhAdmin()) {
+            throw new AcessoNegadoException("Somente ADMIN pode criar usuários");
+        }
+
         if (usuarioRepository.existsByEmail(request.email())) {
             throw new RecursoDuplicadoException("Email já cadastrado");
         }
@@ -59,8 +69,38 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    public Usuario registrarOrganizador(RegistroOrganizadorRequest request) {
+        if (usuarioRepository.existsByEmail(request.email())) {
+            throw new RecursoDuplicadoException("E-mail já cadastrado");
+        }
+
+        Usuario usuario = usuarioMapper.toEntity(request);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario.setPerfil(Perfil.ORGANIZADOR);
+        usuario.setDataCriacao(LocalDateTime.now());
+
+        return usuarioRepository.save(usuario);
+    }
+
+    public void criarAdministradorBootstrap(String nome, String email, String senha) {
+        usuarioRepository.findByEmail(email).ifPresentOrElse(usuario -> {
+            if (usuario.getPerfil() != Perfil.ADMIN) {
+                throw new ValidacaoException("Já existe um usuário sem perfil ADMIN para o e-mail de bootstrap informado");
+            }
+        }, () -> {
+            Usuario administrador = new Usuario();
+            administrador.setNome(nome);
+            administrador.setEmail(email);
+            administrador.setSenha(passwordEncoder.encode(senha));
+            administrador.setPerfil(Perfil.ADMIN);
+            administrador.setDataCriacao(LocalDateTime.now());
+            usuarioRepository.save(administrador);
+        });
+    }
+
     @Transactional
     public Usuario atualizar(Long id, UsuarioUpdateRequest request) {
+        validarPermissaoParaOperarUsuario(id);
         Usuario atual = buscarPorId(id);
 
         if (request.email() != null && !request.email().equals(atual.getEmail())) {
@@ -88,10 +128,18 @@ public class UsuarioService {
     }
 
     public void deletar(Long id) {
+        validarPermissaoParaOperarUsuario(id);
+
         if (!usuarioRepository.existsById(id)) {
             throw new RecursoNaoEncontradoException("Usuário com id " + id + " não foi encontrado");
         }
         usuarioRepository.deleteById(id);
+    }
+
+    private void validarPermissaoParaOperarUsuario(Long usuarioId) {
+        if (!SecurityUtils.usuarioLogadoEhAdmin() && !SecurityUtils.getUsuarioIdLogado().equals(usuarioId)) {
+            throw new AcessoNegadoException("Você não tem permissão para operar este usuário");
+        }
     }
 
 }
