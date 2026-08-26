@@ -1,10 +1,12 @@
 FROM maven:3.9.6-amazoncorretto-21 AS build
 
-COPY src /app/src
-COPY pom.xml /app
 WORKDIR /app
+COPY .mvn .mvn
+COPY mvnw mvnw
+COPY pom.xml .
+COPY src src
 
-RUN mvn clean install -DskipTests -Dspring.flyway.enabled=false
+RUN ./mvnw clean package -DskipTests -Dspring.flyway.enabled=false
 
 FROM amazoncorretto:21-alpine-jdk
 COPY --from=build /app/target/gestrun-0.0.1-SNAPSHOT.jar /app/app.jar
