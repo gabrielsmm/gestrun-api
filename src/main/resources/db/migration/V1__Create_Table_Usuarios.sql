@@ -1,11 +1,6 @@
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'perfil_usuario_enum') THEN
-        CREATE TYPE perfil_usuario_enum AS ENUM ('ADMIN', 'ORGANIZADOR', 'CORREDOR');
-    END IF;
-END$$;
+CREATE TYPE perfil_usuario_enum AS ENUM ('ADMIN', 'ORGANIZADOR');
 
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE usuarios (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
