@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS resultados (
+CREATE TABLE resultados (
     id BIGSERIAL PRIMARY KEY,
-    inscricao_id BIGINT NOT NULL UNIQUE, -- 1:1 com inscrição
+    inscricao_id BIGINT NOT NULL UNIQUE,
     tempo TIME NOT NULL,
     posicao_geral INT,
     data_criacao TIMESTAMP NOT NULL DEFAULT NOW(),
