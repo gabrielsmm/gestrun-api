@@ -8,10 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CorridaRepository extends JpaRepository<Corrida, Long> {
 
     List<Corrida> findByOrganizadorId(Long organizadorId);
+
+    Optional<Corrida> findBySlug(String slug);
+
+    boolean existsBySlug(String slug);
 
     @Query("""
         SELECT c 

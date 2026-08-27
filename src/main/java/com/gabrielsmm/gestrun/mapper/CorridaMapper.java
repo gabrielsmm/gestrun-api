@@ -14,12 +14,18 @@ public interface CorridaMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "organizador", ignore = true)
     @Mapping(target = "dataCriacao", ignore = true)
+    @Mapping(target = "publicada", ignore = true)
+    @Mapping(target = "slug", ignore = true)
     Corrida toEntity(CorridaInsertRequest request);
 
     @Mapping(source = "organizador.id", target = "organizadorId")
     CorridaResponse toResponse(Corrida entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "organizador", ignore = true)
+    @Mapping(target = "dataCriacao", ignore = true)
+    @Mapping(target = "publicada", ignore = true)
+    @Mapping(target = "slug", ignore = true)
     void updateEntityFromDto(CorridaUpdateRequest request, @MappingTarget Corrida entity);
 
     @Mapping(target = "conteudo", source = "content")
