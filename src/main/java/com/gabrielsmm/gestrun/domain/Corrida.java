@@ -43,6 +43,24 @@ public class Corrida implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String regulamento;
 
+    @Column(name = "valor_inscricao", nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorInscricao;
+
+    @Column(name = "inscricoes_abertura", nullable = false)
+    private LocalDateTime inscricoesAbertura;
+
+    @Column(name = "inscricoes_encerramento", nullable = false)
+    private LocalDateTime inscricoesEncerramento;
+
+    @Column(nullable = false)
+    private Integer capacidade;
+
+    @Column(nullable = false)
+    private boolean publicada;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private String slug;
+
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
@@ -50,12 +68,12 @@ public class Corrida implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Corrida corrida = (Corrida) o;
-        return Objects.equals(id, corrida.id) && Objects.equals(organizador, corrida.organizador) && Objects.equals(nome, corrida.nome) && Objects.equals(data, corrida.data) && Objects.equals(local, corrida.local) && Objects.equals(distanciaKm, corrida.distanciaKm) && Objects.equals(regulamento, corrida.regulamento) && Objects.equals(dataCriacao, corrida.dataCriacao);
+        return Objects.equals(id, corrida.id) && Objects.equals(organizador, corrida.organizador) && Objects.equals(nome, corrida.nome) && Objects.equals(data, corrida.data) && Objects.equals(local, corrida.local) && Objects.equals(distanciaKm, corrida.distanciaKm) && Objects.equals(regulamento, corrida.regulamento) && Objects.equals(valorInscricao, corrida.valorInscricao) && Objects.equals(inscricoesAbertura, corrida.inscricoesAbertura) && Objects.equals(inscricoesEncerramento, corrida.inscricoesEncerramento) && Objects.equals(capacidade, corrida.capacidade) && publicada == corrida.publicada && Objects.equals(slug, corrida.slug) && Objects.equals(dataCriacao, corrida.dataCriacao);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, organizador, nome, data, local, distanciaKm, regulamento, dataCriacao);
+        return Objects.hash(id, organizador, nome, data, local, distanciaKm, regulamento, valorInscricao, inscricoesAbertura, inscricoesEncerramento, capacidade, publicada, slug, dataCriacao);
     }
 
 }

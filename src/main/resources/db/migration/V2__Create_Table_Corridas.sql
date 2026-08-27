@@ -6,9 +6,12 @@ CREATE TABLE corridas (
     local VARCHAR(255) NOT NULL,
     distancia_km NUMERIC(5,2),
     regulamento TEXT,
-    valor_inscricao NUMERIC(10,2) DEFAULT 0 CHECK (valor_inscricao >= 0),
+    valor_inscricao NUMERIC(10,2) NOT NULL DEFAULT 0 CHECK (valor_inscricao >= 0),
     inscricoes_abertura TIMESTAMP NOT NULL,
     inscricoes_encerramento TIMESTAMP NOT NULL,
+    capacidade INT NOT NULL CHECK (capacidade >= 0),
+    publicada BOOLEAN NOT NULL DEFAULT FALSE,
+    slug VARCHAR(255) NOT NULL UNIQUE,
     data_criacao TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_organizador FOREIGN KEY (organizador_id)
         REFERENCES usuarios(id)
