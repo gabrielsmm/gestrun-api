@@ -2,6 +2,7 @@ package com.gabrielsmm.gestrun.controller;
 
 import com.gabrielsmm.gestrun.domain.Corrida;
 import com.gabrielsmm.gestrun.dto.CorridaInsertRequest;
+import com.gabrielsmm.gestrun.dto.CorridaPublicacaoRequest;
 import com.gabrielsmm.gestrun.dto.CorridaResponse;
 import com.gabrielsmm.gestrun.dto.CorridaUpdateRequest;
 import com.gabrielsmm.gestrun.dto.PaginacaoResponse;
@@ -78,6 +79,15 @@ public class CorridaController {
                                                      @RequestBody @Valid CorridaUpdateRequest request) {
         Corrida corridaAtualizada = corridaService.atualizar(id, request);
         return ResponseEntity.ok(corridaMapper.toResponse(corridaAtualizada));
+    }
+
+    @PatchMapping("/{id}/publicacao")
+    @Operation(summary = "Publicar ou despublicar corrida")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZADOR')")
+    public ResponseEntity<CorridaResponse> alterarPublicacao(@PathVariable Long id,
+                                                              @RequestBody CorridaPublicacaoRequest request) {
+        Corrida corrida = corridaService.alterarPublicacao(id, request.publicada());
+        return ResponseEntity.ok(corridaMapper.toResponse(corrida));
     }
 
     @DeleteMapping("/{id}")

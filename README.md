@@ -91,9 +91,3 @@ docker compose run --rm \
 O comando é idempotente: se o e-mail já for de um administrador, nada é alterado. Se pertencer a outro perfil, ele falha para evitar elevação de privilégio acidental.
 
 Após o bootstrap, use `POST /auth/login`. O cadastro público `POST /auth/registrar` cria somente organizadores; a criação de outros usuários, inclusive administradores, exige um administrador autenticado em `POST /api/usuarios`.
-
-## Segurança operacional
-
-- Em produção, use HTTPS por meio de proxy reverso ou balanceador.
-- Não reutilize credenciais entre ambientes e mantenha backups do PostgreSQL.
-- Configure `CORS_ALLOWED_ORIGINS` somente com os domínios reais do frontend, separados por vírgula.
