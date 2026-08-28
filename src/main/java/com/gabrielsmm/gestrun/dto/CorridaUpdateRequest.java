@@ -4,12 +4,11 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record CorridaUpdateRequest(
         String nome,
-        LocalDate data,
+        LocalDateTime dataHoraInicio,
         String local,
         BigDecimal distanciaKm,
         String regulamento,

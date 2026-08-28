@@ -2,7 +2,7 @@ CREATE TABLE corridas (
     id BIGSERIAL PRIMARY KEY,
     organizador_id BIGINT NOT NULL,
     nome VARCHAR(255) NOT NULL,
-    data DATE NOT NULL,
+    data_hora_inicio TIMESTAMP NOT NULL,
     local VARCHAR(255) NOT NULL,
     distancia_km NUMERIC(5,2),
     regulamento TEXT,
@@ -16,5 +16,8 @@ CREATE TABLE corridas (
     CONSTRAINT fk_organizador FOREIGN KEY (organizador_id)
         REFERENCES usuarios(id)
         ON DELETE CASCADE,
-    CONSTRAINT chk_periodo_inscricao CHECK (inscricoes_encerramento > inscricoes_abertura)
+    CONSTRAINT chk_periodo_inscricao CHECK (
+        inscricoes_abertura < inscricoes_encerramento
+        AND inscricoes_encerramento < data_hora_inicio
+    )
 );

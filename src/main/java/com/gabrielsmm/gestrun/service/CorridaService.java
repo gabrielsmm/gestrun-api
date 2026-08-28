@@ -83,6 +83,15 @@ public class CorridaService {
     }
 
     private void validarDados(Corrida corrida) {
+        if (corrida.getNome() == null || corrida.getNome().isBlank()) {
+            throw new ValidacaoException("O nome da corrida é obrigatório");
+        }
+        if (corrida.getLocal() == null || corrida.getLocal().isBlank()) {
+            throw new ValidacaoException("O local da corrida é obrigatório");
+        }
+        if (corrida.getDataHoraInicio() == null) {
+            throw new ValidacaoException("A data e hora de início da corrida são obrigatórias");
+        }
         if (corrida.getValorInscricao() == null || corrida.getValorInscricao().signum() < 0) {
             throw new ValidacaoException("O valor da inscrição não pode ser negativo");
         }
@@ -92,6 +101,9 @@ public class CorridaService {
         if (corrida.getInscricoesAbertura() == null || corrida.getInscricoesEncerramento() == null ||
                 !corrida.getInscricoesEncerramento().isAfter(corrida.getInscricoesAbertura())) {
             throw new ValidacaoException("O encerramento das inscrições deve ser posterior à abertura");
+        }
+        if (!corrida.getInscricoesEncerramento().isBefore(corrida.getDataHoraInicio())) {
+            throw new ValidacaoException("O encerramento das inscrições deve ser anterior ao início da corrida");
         }
     }
 
